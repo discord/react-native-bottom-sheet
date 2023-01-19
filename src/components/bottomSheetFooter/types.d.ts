@@ -38,4 +38,4 @@ export interface BottomSheetDefaultFooterProps extends BottomSheetFooterProps {
 }
 
 export interface BottomSheetFooterContainerProps
-  extends Required<Pick<BottomSheetProps, 'footerComponent'>> {}
+  extends Required<Pick<BottomSheetProps, 'renderFooter'>> {}

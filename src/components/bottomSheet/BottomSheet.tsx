@@ -162,7 +162,7 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
       handleComponent,
       backdropComponent: BackdropComponent,
       backgroundComponent,
-      footerComponent,
+      renderFooter,
       children,
 
       // accessibility
@@ -1817,10 +1817,8 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
                   detached={detached}
                 >
                   {children}
-                  {footerComponent ? (
-                    <BottomSheetFooterContainer
-                      footerComponent={footerComponent}
-                    />
+                  {renderFooter ? (
+                    <BottomSheetFooterContainer renderFooter={renderFooter} />
                   ) : null}
                 </BottomSheetContent>
                 {handleComponent !== null ? (

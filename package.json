@@ -37,6 +37,7 @@
     "bootstrap": "yarn install && yarn example"
   },
   "dependencies": {
+    "@biomejs/biome": "^1.9.4",
     "@gorhom/portal": "1.0.14",
     "invariant": "^2.2.4"
   },
@@ -78,6 +79,10 @@
   "react-native-builder-bob": {
     "source": "src",
     "output": "lib",
-    "targets": ["commonjs", "module", "typescript"]
+    "targets": [
+      "commonjs",
+      "module",
+      "typescript"
+    ]
   }
 }
