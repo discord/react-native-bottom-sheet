@@ -158,7 +158,7 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
       handleComponent,
       backdropComponent,
       backgroundComponent,
-      footerComponent,
+      renderFooter,
       children,
 
       // accessibility
@@ -1917,10 +1917,8 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
                   >
                     {children}
                   </DraggableView>
-                  {footerComponent && (
-                    <BottomSheetFooterContainer
-                      footerComponent={footerComponent}
-                    />
+                  {renderFooter && (
+                    <BottomSheetFooterContainer renderFooter={renderFooter} />
                   )}
                 </Animated.View>
                 <BottomSheetHandleContainer

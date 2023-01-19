@@ -1,11 +1,11 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { useDerivedValue } from 'react-native-reanimated';
 import { KEYBOARD_STATE } from '../../constants';
 import { useBottomSheetInternal } from '../../hooks';
 import type { BottomSheetFooterContainerProps } from './types';
 
 const BottomSheetFooterContainerComponent = ({
-  footerComponent: FooterComponent,
+  renderFooter,
 }: BottomSheetFooterContainerProps) => {
   //#region hooks
   const {
@@ -46,7 +46,7 @@ const BottomSheetFooterContainerComponent = ({
   ]);
   //#endregion
 
-  return <FooterComponent animatedFooterPosition={animatedFooterPosition} />;
+  return renderFooter({ animatedFooterPosition });
 };
 
 const BottomSheetFooterContainer = memo(BottomSheetFooterContainerComponent);
