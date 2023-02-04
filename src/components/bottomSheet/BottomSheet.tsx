@@ -599,6 +599,11 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
     // biome-ignore lint/correctness/useExhaustiveDependencies(BottomSheet.name): used for debug only
     const handleOnAnimate = useCallback(
       function handleOnAnimate(targetIndex: number) {
+        const closedPosition = animatedClosedPosition.value;
+        // TODO: added from https://github.com/gorhom/react-native-bottom-sheet/commit/d66fae48649970ef01fb5ce2cae6c1e29dfc8a99#diff-388335bd611fb6e4ec17932ace8ce123818f46f083886f6581b16fd52380ac42R633
+        // is this still needed?
+        const toIndex =
+          targetIndex === closedPosition ? -1 : animatedSnapPoints.value.indexOf(targetIndex);
         if (__DEV__) {
           print({
             component: BottomSheet.name,
@@ -615,8 +620,8 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
           return;
         }
 
-        if (targetIndex !== animatedCurrentIndex.value) {
-          _providedOnAnimate(animatedCurrentIndex.value, targetIndex);
+        if (toIndex !== animatedCurrentIndex.value) {
+          _providedOnAnimate(animatedCurrentIndex.value, toIndex);
         }
       },
       [_providedOnAnimate, animatedCurrentIndex]
