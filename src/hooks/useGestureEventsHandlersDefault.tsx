@@ -59,6 +59,7 @@ export const useGestureEventsHandlersDefault: GestureEventsHandlersHookType =
       overDragResistanceFactor,
       isInTemporaryPosition,
       isScrollableRefreshable,
+      isScrollableLocked,
       animateToPosition,
       stopAnimation,
     } = useBottomSheetInternal();
@@ -138,6 +139,14 @@ export const useGestureEventsHandlersDefault: GestureEventsHandlersHookType =
           isScrollableRefreshable.value &&
           animatedPosition.value === highestSnapPoint
         ) {
+          return;
+        }
+
+        /**
+         * if scrollable isn't currently marked as translatable, then do not
+         * interact with current gesture.
+         */
+        if (source === GESTURE_SOURCE.SCROLLABLE && !isScrollableLocked.value) {
           return;
         }
 
@@ -258,6 +267,7 @@ export const useGestureEventsHandlersDefault: GestureEventsHandlersHookType =
     const handleOnEnd: GestureEventHandlerCallbackType = useWorkletCallback(
       function handleOnEnd(source, { translationY, absoluteY, velocityY }) {
         const highestSnapPoint = animatedHighestSnapPoint.value;
+
         const isSheetAtHighestSnapPoint =
           animatedPosition.value === highestSnapPoint;
 
@@ -288,6 +298,10 @@ export const useGestureEventsHandlersDefault: GestureEventsHandlersHookType =
               velocityY / 2
             );
           }
+          return;
+        }
+
+        if (!isScrollableLocked.value && animatedSnapPoints.value.includes(animatedPosition.value)) {
           return;
         }
 
@@ -377,6 +391,7 @@ export const useGestureEventsHandlersDefault: GestureEventsHandlersHookType =
       [
         enablePanDownToClose,
         isInTemporaryPosition,
+        isScrollableLocked,
         isScrollableRefreshable,
         animatedClosedPosition,
         animatedHighestSnapPoint,

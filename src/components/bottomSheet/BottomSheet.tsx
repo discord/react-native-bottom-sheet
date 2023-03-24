@@ -310,6 +310,7 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
       animatedScrollableContentOffsetY,
       animatedScrollableOverrideState,
       isScrollableRefreshable,
+      isScrollableLocked,
       setScrollableRef,
       removeScrollableRef,
     } = useScrollable();
@@ -416,6 +417,13 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
        * if sheet state is extended, then unlock scrolling
        */
       if (animatedSheetState.value === SHEET_STATE.EXTENDED) {
+        return SCROLLABLE_STATE.UNLOCKED;
+      }
+
+      /**
+       * if the current scrollable is blocked from translation, unlock scrolling
+       */
+      if (!isScrollableLocked.value) {
         return SCROLLABLE_STATE.UNLOCKED;
       }
 
@@ -1388,6 +1396,7 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
         isInTemporaryPosition,
         isContentHeightFixed,
         isScrollableRefreshable,
+        isScrollableLocked,
         shouldHandleKeyboardEvents,
         simultaneousHandlers: _providedSimultaneousHandlers,
         waitFor: _providedWaitFor,
@@ -1423,6 +1432,7 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
         shouldHandleKeyboardEvents,
         animatedScrollableContentOffsetY,
         isScrollableRefreshable,
+        isScrollableLocked,
         isContentHeightFixed,
         isInTemporaryPosition,
         enableContentPanningGesture,

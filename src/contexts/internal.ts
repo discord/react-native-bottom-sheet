@@ -50,6 +50,7 @@ export interface BottomSheetInternalContextType
   animatedScrollableType: SharedValue<SCROLLABLE_TYPE>;
   animatedScrollableContentOffsetY: SharedValue<number>;
   animatedScrollableOverrideState: SharedValue<SCROLLABLE_STATE>;
+  isScrollableLocked: SharedValue<boolean>;
   isScrollableRefreshable: SharedValue<boolean>;
   isContentHeightFixed: SharedValue<boolean>;
   isInTemporaryPosition: SharedValue<boolean>;

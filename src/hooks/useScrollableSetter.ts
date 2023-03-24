@@ -11,6 +11,7 @@ export const useScrollableSetter = (
   type: SCROLLABLE_TYPE,
   contentOffsetY: SharedValue<number>,
   refreshable: boolean,
+  scrollBuffer: number | undefined,
   useFocusHook = useEffect
 ) => {
   // hooks
@@ -19,6 +20,7 @@ export const useScrollableSetter = (
     animatedScrollableContentOffsetY: rootScrollableContentOffsetY,
     isContentHeightFixed,
     isScrollableRefreshable,
+    isScrollableLocked,
     setScrollableRef,
     removeScrollableRef,
   } = useBottomSheetInternal();
@@ -29,6 +31,7 @@ export const useScrollableSetter = (
     rootScrollableContentOffsetY.value = contentOffsetY.value;
     animatedScrollableType.value = type;
     isScrollableRefreshable.value = refreshable;
+    isScrollableLocked.value = !scrollBuffer;
     isContentHeightFixed.value = false;
 
     // set current scrollable ref
@@ -53,6 +56,7 @@ export const useScrollableSetter = (
     rootScrollableContentOffsetY,
     contentOffsetY,
     isScrollableRefreshable,
+    isScrollableLocked,
     isContentHeightFixed,
     setScrollableRef,
     removeScrollableRef,
