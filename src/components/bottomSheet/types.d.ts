@@ -61,6 +61,12 @@ export interface BottomSheetProps
    */
   initialPosition?: number;
   /**
+   * Initial position of the sheet.
+   * @type number
+   * @default SCREEN_HEIGHT
+   */
+  initialPosition?: number;
+  /**
    * Defines how violently sheet has to be stopped while over dragging.
    * @type number
    * @default 2.5
