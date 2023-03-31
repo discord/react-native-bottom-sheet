@@ -102,6 +102,7 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
       // configurations
       index: _providedIndex = 0,
       snapPoints: _providedSnapPoints,
+      initialPosition = INITIAL_POSITION,
       animateOnMount = DEFAULT_ANIMATE_ON_MOUNT,
       enableContentPanningGesture = DEFAULT_ENABLE_CONTENT_PANNING_GESTURE,
       enableHandlePanningGesture,
@@ -240,7 +241,7 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
     const animatedCurrentIndex = useReactiveSharedValue(
       animateOnMount ? -1 : _providedIndex
     );
-    const animatedPosition = useSharedValue(INITIAL_POSITION);
+    const animatedPosition = useSharedValue(initialPosition);
     const animatedNextPosition = useSharedValue(INITIAL_VALUE);
     const animatedNextPositionIndex = useSharedValue(INITIAL_VALUE);
 
