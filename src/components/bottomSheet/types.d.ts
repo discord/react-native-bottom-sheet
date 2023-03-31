@@ -55,6 +55,12 @@ export interface BottomSheetProps
     | SharedValue<Array<string | number>>
     | Readonly<(string | number)[] | SharedValue<(string | number)[]>>;
   /**
+   * Initial position of the sheet.
+   * @type number
+   * @default SCREEN_HEIGHT
+   */
+  initialPosition?: number;
+  /**
    * Defines how violently sheet has to be stopped while over dragging.
    * @type number
    * @default 2.5
