@@ -12,6 +12,7 @@ export const useScrollableSetter = (
   contentOffsetY: SharedValue<number>,
   refreshable: boolean,
   scrollBuffer: number | undefined,
+  preserveScrollMomentum: boolean | undefined,
   useFocusHook = useEffect
 ) => {
   // hooks
@@ -31,7 +32,7 @@ export const useScrollableSetter = (
     rootScrollableContentOffsetY.value = contentOffsetY.value;
     animatedScrollableType.value = type;
     isScrollableRefreshable.value = refreshable;
-    isScrollableLocked.value = !scrollBuffer;
+    isScrollableLocked.value = !preserveScrollMomentum && !scrollBuffer;
     isContentHeightFixed.value = false;
 
     // set current scrollable ref

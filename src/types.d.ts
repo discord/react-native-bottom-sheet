@@ -182,6 +182,7 @@ export type ScrollEventsHandlersHookType = (
   ref: React.RefObject<Scrollable>,
   contentOffsetY: SharedValue<number>,
   scrollBuffer: number | undefined,
+  preserveScrollMomentum: boolean | undefined,
 ) => {
   handleOnScroll?: ScrollEventHandlerCallbackType;
   handleOnBeginDrag?: ScrollEventHandlerCallbackType;
