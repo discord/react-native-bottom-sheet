@@ -6,6 +6,7 @@ import type {
   ScrollEventsHandlersHookType,
 } from '../types';
 import { useBottomSheetInternal } from './useBottomSheetInternal';
+import { Platform } from 'react-native';
 
 export type ScrollEventContextType = {
   initialContentOffsetY: number;
@@ -45,7 +46,9 @@ export const useScrollEventsHandlersDefault: ScrollEventsHandlersHookType = (
           if (isScrollingTowardsBottom && y > (scrollBuffer ?? 0) && context.shouldLockInitialPosition) {
             isScrollableLocked.value = true;
             animatedScrollableState.value = SCROLLABLE_STATE.LOCKED;
-            context.shouldLockInitialPosition = true;
+          } else if (!isScrollingTowardsBottom && preserveScrollMomentum && y <= 0 && context.shouldLockInitialPosition) {
+            isScrollableLocked.value = true;
+            animatedScrollableState.value = SCROLLABLE_STATE.LOCKED;
           }
           awaitingFirstScroll.value = false;
         }
@@ -108,8 +111,18 @@ export const useScrollEventsHandlersDefault: ScrollEventsHandlersHookType = (
           } else {
             isScrollableLocked.value = false;
           }
+        } else if (preserveScrollMomentum) {
+          if (Platform.OS === 'ios') {
+            isScrollableLocked.value = false;
+          } else {
+            // On Android, there is no overscroll, so the handleOnScroll
+            // callback never fires when dragging down from the top. In those cases,
+            // we just want to lock the scrollable immediately so that it can
+            // pan downward as expected.
+            isScrollableLocked.value = y <= 0;
+          }
         } else {
-          isScrollableLocked.value = preserveScrollMomentum ? y <= 0 : true;
+          isScrollableLocked.value = true;
         }
 
         /**
@@ -119,7 +132,7 @@ export const useScrollEventsHandlersDefault: ScrollEventsHandlersHookType = (
         if (
           (animatedSheetState.value !== SHEET_STATE.EXTENDED &&
           animatedSheetState.value !== SHEET_STATE.FILL_PARENT &&
-          y > 0)
+          y > 0) || (preserveScrollMomentum && y <= 0)
         ) {
           context.shouldLockInitialPosition = true;
         } else {
