@@ -34,6 +34,7 @@ import {
   BottomSheetInternalProvider,
   BottomSheetProvider,
 } from '../../contexts';
+import type { BottomSheetInternalContextType } from '../../contexts/internal';
 import BottomSheetContainer from '../bottomSheetContainer';
 import BottomSheetGestureHandlersProvider from '../bottomSheetGestureHandlersProvider';
 import BottomSheetBackdropContainer from '../bottomSheetBackdropContainer';
@@ -357,7 +358,7 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
       isInTemporaryPosition,
       keyboardBehavior,
     ]);
-    const animatedScrollableState = useDerivedValue(() => {
+    const animatedScrollableState = useDerivedValue<SCROLLABLE_STATE>(() => {
       /**
        * if scrollable override state is set, then we just return its value.
        */
@@ -1068,7 +1069,7 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
     //#endregion
 
     //#region contexts variables
-    const internalContextVariables = useMemo(
+    const internalContextVariables = useMemo<BottomSheetInternalContextType>(
       () => ({
         enableContentPanningGesture,
         enableDynamicSizing,
