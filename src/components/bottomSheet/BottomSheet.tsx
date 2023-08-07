@@ -41,6 +41,7 @@ import {
   BottomSheetInternalProvider,
   BottomSheetProvider,
 } from '../../contexts';
+import type { BottomSheetInternalContextType } from '../../contexts/internal';
 import {
   useAnimatedSnapPoints,
   useKeyboard,
@@ -1367,7 +1368,7 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
     //#endregion
 
     //#region contexts variables
-    const internalContextVariables = useMemo(
+    const internalContextVariables = useMemo<BottomSheetInternalContextType>(
       () => ({
         enableContentPanningGesture,
         enableDynamicSizing,
