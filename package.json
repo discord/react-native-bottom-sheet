@@ -66,7 +66,7 @@
   "peerDependencies": {
     "@types/react": "*",
     "@types/react-native": "*",
-    "@discordapp/flash-list": "1.0.0",
+    "@shopify/flash-list": "https://github.com/discord/flash-list/archive/91d56d0fdfbf08d670732dafe328f8f2664416dc.tar.gz",
     "react": "*",
     "react-native": "*",
     "react-native-gesture-handler": ">=1.10.1",

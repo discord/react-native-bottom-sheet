@@ -18,10 +18,7 @@ import type {
 } from 'react-native';
 import type Animated from 'react-native-reanimated';
 import type { ScrollEventsHandlersHookType } from '../../types';
-import type {
-  AnimatedFlashListProps,
-  FlashListProps,
-} from '@discordapp/flash-list';
+import type { FlashListProps } from '@shopify/flash-list';
 
 export interface BottomSheetScrollableProps {
   /**
@@ -149,8 +146,11 @@ export interface BottomSheetFlatListMethods {
 
 //#region FlatList
 export type BottomSheetFlashListProps<T> = Omit<
-  AnimatedFlashListProps<T>,
-  'decelerationRate' | 'onScroll' | 'scrollEventThrottle'
+  FlashListProps<T>,
+  | 'decelerationRate'
+  | 'onScroll'
+  | 'scrollEventThrottle'
+  | 'renderScrollComponent'
 > &
   BottomSheetScrollableProps & {
     ref?: Ref<BottomSheetFlashListMethods>;

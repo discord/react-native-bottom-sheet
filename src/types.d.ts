@@ -15,7 +15,7 @@ import type {
   WithSpringConfig,
   WithTimingConfig,
 } from 'react-native-reanimated';
-import type { FlashList } from '@discordapp/flash-list';
+import type { FlashList } from '@shopify/flash-list';
 import type { GESTURE_SOURCE } from './constants';
 
 //#region Methods
