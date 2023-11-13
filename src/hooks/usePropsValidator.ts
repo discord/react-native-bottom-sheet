@@ -95,7 +95,7 @@ export const usePropsValidator = ({
         children.type.$bottomSheetIntegrated) ||
         !enableDynamicSizing,
       `'enableDynamicSizing' is enabled but children type is not integrated with the library !` +
-        ` expected children types are\n- BottomSheetView\n- BottomSheetFlatList\n- BottomSheetScrollView\n- BottomSheetSectionList\n- BottomSheetVirtualizedList`
+        ` expected children types are\n- BottomSheetView\n- BottomSheetFlashList\n- BottomSheetFlatList\n- BottomSheetScrollView\n- BottomSheetSectionList\n- BottomSheetVirtualizedList`
     );
   }, [enableDynamicSizing, children]);
 };

@@ -47,6 +47,12 @@ export interface BottomSheetProps
    */
   snapPoints?: Array<string | number> | SharedValue<Array<string | number>>;
   /**
+   * Initial position of the sheet.
+   * @type number
+   * @default SCREEN_HEIGHT
+   */
+  initialPosition?: number;
+  /**
    * Defines how violently sheet has to be stopped while over dragging.
    * @type number
    * @default 2.5
@@ -249,9 +255,13 @@ export interface BottomSheetProps
   /**
    * Callback when the sheet about to animate to a new position.
    *
-   * @type (fromIndex: number, toIndex: number) => void;
+   * @type (fromIndex: number, toIndex: number, source: ANIMATION_SOURCE) => void;
    */
-  onAnimate?: (fromIndex: number, toIndex: number) => void;
+  onAnimate?: (
+    fromIndex: number,
+    toIndex: number,
+    source: ANIMATION_SOURCE
+  ) => void;
   //#endregion
 
   //#region components
@@ -275,11 +285,11 @@ export interface BottomSheetProps
    */
   backgroundComponent?: React.FC<BottomSheetBackgroundProps> | null;
   /**
-   * Component to be placed as a footer.
+   * Function to render as the footer.
    * @see {BottomSheetFooterProps}
-   * @type React.FC\<BottomSheetFooterProps\>
+   * @type (props: BottomSheetFooterProps) => React.ReactElement | null;
    */
-  footerComponent?: React.FC<BottomSheetFooterProps>;
+  renderFooter?: (props: BottomSheetFooterProps) => React.ReactElement | null;
   /**
    * A scrollable node or normal view.
    * @type React.ReactNode
