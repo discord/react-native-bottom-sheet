@@ -1,4 +1,4 @@
-import { useRef, useCallback, useEffect } from 'react';
+import { useRef, useCallback, useLayoutEffect } from 'react';
 
 type Callback = (...args: any[]) => any;
 /**
@@ -11,7 +11,7 @@ export const useStableCallback = (callback: Callback) => {
     (...args: any) => callbackRef.current && callbackRef.current(...args),
     []
   );
-  useEffect(() => {
+  useLayoutEffect(() => {
     callbackRef.current = callback;
     return () => (callbackRef.current = undefined);
   });

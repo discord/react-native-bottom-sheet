@@ -4,7 +4,7 @@ import React, {
   forwardRef,
   useImperativeHandle,
   memo,
-  useEffect,
+  useLayoutEffect,
 } from 'react';
 import { Platform } from 'react-native';
 import invariant from 'invariant';
@@ -1598,7 +1598,7 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
      *
      * @alias onIndexChange
      */
-    useEffect(() => {
+    useLayoutEffect(() => {
       if (isAnimatedOnMount.value) {
         handleSnapToIndex(_providedIndex);
       }
