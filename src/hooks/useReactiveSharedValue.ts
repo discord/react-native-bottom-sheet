@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useLayoutEffect, useRef } from 'react';
 import Animated, {
   cancelAnimation,
   makeMutable,
@@ -34,7 +34,7 @@ export const useReactiveSharedValue = <T>(
     valueRef.current.value = value as T;
   }
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     return () => {
       if (valueRef.current) {
         cancelAnimation(valueRef.current);
