@@ -44,6 +44,7 @@ export function createBottomSheetScrollableComponent<T, P>(
       refreshControl,
       scrollBuffer,
       preserveScrollMomentum,
+      lockableScrollableContentOffsetY,
       // events
       onScroll,
       onScrollBeginDrag,
@@ -63,7 +64,8 @@ export function createBottomSheetScrollableComponent<T, P>(
         onScrollBeginDrag,
         onScrollEndDrag,
         scrollBuffer,
-        preserveScrollMomentum
+        preserveScrollMomentum,
+        lockableScrollableContentOffsetY
       );
     const {
       animatedFooterHeight,
