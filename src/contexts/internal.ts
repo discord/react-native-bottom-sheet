@@ -51,6 +51,8 @@ export interface BottomSheetInternalContextType
   animatedScrollableContentOffsetY: SharedValue<number>;
   animatedScrollableOverrideState: SharedValue<SCROLLABLE_STATE>;
   isScrollableLocked: SharedValue<boolean>;
+  // the real content offset when the scrollable is locked
+  lockableScrollableContentOffsetY: SharedValue<number>;
   isScrollableRefreshable: SharedValue<boolean>;
   isContentHeightFixed: SharedValue<boolean>;
   isInTemporaryPosition: SharedValue<boolean>;
