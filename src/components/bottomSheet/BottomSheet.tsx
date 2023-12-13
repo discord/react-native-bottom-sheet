@@ -289,6 +289,7 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
       animatedScrollableOverrideState,
       isScrollableRefreshable,
       isScrollableLocked,
+      lockableScrollableContentOffsetY,
       setScrollableRef,
       removeScrollableRef,
     } = useScrollable();
@@ -1099,6 +1100,7 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
         isContentHeightFixed,
         isScrollableRefreshable,
         isScrollableLocked,
+        lockableScrollableContentOffsetY,
         shouldHandleKeyboardEvents,
         simultaneousHandlers: _providedSimultaneousHandlers,
         waitFor: _providedWaitFor,
