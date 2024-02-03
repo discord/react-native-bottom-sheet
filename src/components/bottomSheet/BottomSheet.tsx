@@ -289,6 +289,7 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
       animatedScrollableOverrideState,
       isScrollableRefreshable,
       isScrollableLocked,
+      isScrollEnded,
       setScrollableRef,
       removeScrollableRef,
     } = useScrollable();
@@ -1099,6 +1100,7 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
         isContentHeightFixed,
         isScrollableRefreshable,
         isScrollableLocked,
+        isScrollEnded,
         shouldHandleKeyboardEvents,
         simultaneousHandlers: _providedSimultaneousHandlers,
         waitFor: _providedWaitFor,
@@ -1135,6 +1137,7 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
         animatedScrollableContentOffsetY,
         isScrollableRefreshable,
         isScrollableLocked,
+        isScrollEnded,
         isContentHeightFixed,
         isInTemporaryPosition,
         enableContentPanningGesture,
