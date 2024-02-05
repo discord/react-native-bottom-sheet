@@ -27,6 +27,7 @@ export const useScrollableSetter = (
     removeScrollableRef,
     animatedContainerHeight,
     animatedContentHeight,
+    isScrollEnded,
   } = useBottomSheetInternal();
 
   // callbacks
@@ -35,8 +36,9 @@ export const useScrollableSetter = (
     rootScrollableContentOffsetY.value = contentOffsetY.value;
     animatedScrollableType.value = type;
     isScrollableRefreshable.value = refreshable;
+    // Keep isScrollableLocked value if the scrollable is still scrolling
     // Android scrollview doesn't bounce so we need to set isScrollableLocked so that the sheet can be pulled up/down
-    isScrollableLocked.value = (!preserveScrollMomentum && !scrollBuffer) || (Platform.OS === 'android' && animatedContentHeight.value <= animatedContainerHeight.value);
+    isScrollableLocked.value = (!isScrollEnded.value && isScrollableLocked.value) || (!preserveScrollMomentum && !scrollBuffer) || (Platform.OS === 'android' && animatedContentHeight.value <= animatedContainerHeight.value);
     isContentHeightFixed.value = false;
 
     // set current scrollable ref

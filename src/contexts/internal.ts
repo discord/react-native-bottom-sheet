@@ -52,6 +52,7 @@ export interface BottomSheetInternalContextType
   animatedScrollableOverrideState: SharedValue<SCROLLABLE_STATE>;
   isScrollableLocked: SharedValue<boolean>;
   isScrollableRefreshable: SharedValue<boolean>;
+  isScrollEnded: SharedValue<boolean>;
   isContentHeightFixed: SharedValue<boolean>;
   isInTemporaryPosition: SharedValue<boolean>;
   shouldHandleKeyboardEvents: SharedValue<boolean>;
