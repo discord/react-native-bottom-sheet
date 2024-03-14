@@ -22,15 +22,8 @@ const CustomHandleComponent: React.FC<CustomHandleProps> = ({
 }) => {
   //#region animations
 
-  const indicatorTransformOriginY = useDerivedValue(
-    () =>
-      interpolate(
-        animatedIndex.value,
-        [0, 1, 2],
-        [-1, 0, 1],
-        Extrapolate.CLAMP
-      ),
-    [animatedIndex.value]
+  const indicatorTransformOriginY = useDerivedValue(() =>
+    interpolate(animatedIndex.value, [0, 1, 2], [-1, 0, 1], Extrapolate.CLAMP)
   );
   //#endregion
 
@@ -47,7 +40,7 @@ const CustomHandleComponent: React.FC<CustomHandleProps> = ({
       borderTopLeftRadius: borderTopRadius,
       borderTopRightRadius: borderTopRadius,
     };
-  }, [animatedIndex.value]);
+  });
   const leftIndicatorStyle = useMemo(
     () => ({
       ...styles.indicator,
@@ -73,7 +66,7 @@ const CustomHandleComponent: React.FC<CustomHandleProps> = ({
         }
       ),
     };
-  }, [animatedIndex.value, indicatorTransformOriginY.value]);
+  });
   const rightIndicatorStyle = useMemo(
     () => ({
       ...styles.indicator,
@@ -99,7 +92,7 @@ const CustomHandleComponent: React.FC<CustomHandleProps> = ({
         }
       ),
     };
-  }, [animatedIndex.value, indicatorTransformOriginY.value]);
+  });
   //#endregion
 
   // render

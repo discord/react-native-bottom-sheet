@@ -37,12 +37,9 @@ export const LocationListBottomSheet = forwardRef<
   //#endregion
 
   //#region styles
-  const scrollViewAnimatedStyle = useAnimatedStyle(
-    () => ({
-      opacity: index.value,
-    }),
-    [index.value]
-  );
+  const scrollViewAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: index.value,
+  }));
   const scrollViewStyle = useMemo(
     () => [styles.scrollView, scrollViewAnimatedStyle],
     [scrollViewAnimatedStyle]

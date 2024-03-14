@@ -36,22 +36,19 @@ const CustomFooterComponent = ({
     return {
       transform: [{ rotate: `${arrowRotate}rad` }],
     };
-  }, [animatedIndex.value]);
+  });
   const arrowStyle = useMemo(
     () => [arrowAnimatedStyle, styles.arrow],
     [arrowAnimatedStyle]
   );
-  const containerAnimatedStyle = useAnimatedStyle(
-    () => ({
-      opacity: interpolate(
-        animatedIndex.value,
-        [-0.85, 0],
-        [0, 1],
-        Extrapolate.CLAMP
-      ),
-    }),
-    [animatedIndex]
-  );
+  const containerAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: interpolate(
+      animatedIndex.value,
+      [-0.85, 0],
+      [0, 1],
+      Extrapolate.CLAMP
+    ),
+  }));
   const containerStyle = useMemo(
     () => [containerAnimatedStyle, styles.container],
     [containerAnimatedStyle]

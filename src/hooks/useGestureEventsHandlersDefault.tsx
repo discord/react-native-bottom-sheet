@@ -94,6 +94,7 @@ export const useGestureEventsHandlersDefault: GestureEventsHandlersHookType =
       },
       [
         stopAnimation,
+        context,
         animatedPosition,
         animatedKeyboardState,
         animatedScrollableContentOffsetY,
@@ -250,17 +251,19 @@ export const useGestureEventsHandlersDefault: GestureEventsHandlersHookType =
         animatedPosition.value = clampedPosition;
       },
       [
-        enableOverDrag,
-        enablePanDownToClose,
-        overDragResistanceFactor,
-        isInTemporaryPosition,
-        isScrollableRefreshable,
         animatedHighestSnapPoint,
+        isInTemporaryPosition,
+        context,
+        enablePanDownToClose,
         animatedContainerHeight,
         animatedSnapPoints,
+        isScrollableRefreshable,
         animatedPosition,
-        animatedScrollableType,
+        isScrollableLocked,
         animatedScrollableContentOffsetY,
+        enableOverDrag,
+        animatedScrollableType,
+        overDragResistanceFactor,
       ]
     );
     const handleOnEnd: GestureEventHandlerCallbackType = useWorkletCallback(
@@ -390,18 +393,19 @@ export const useGestureEventsHandlersDefault: GestureEventsHandlersHookType =
         );
       },
       [
-        enablePanDownToClose,
-        isInTemporaryPosition,
+        animatedHighestSnapPoint,
+        animatedPosition,
         isScrollableRefreshable,
         isScrollableLocked,
-        animatedClosedPosition,
-        animatedHighestSnapPoint,
-        animatedKeyboardHeight,
-        animatedPosition,
-        animatedScrollableType,
         animatedSnapPoints,
+        isInTemporaryPosition,
+        context,
+        animatedScrollableType,
+        enablePanDownToClose,
         animatedScrollableContentOffsetY,
         animateToPosition,
+        animatedKeyboardHeight,
+        animatedClosedPosition,
       ]
     );
 

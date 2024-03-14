@@ -35,7 +35,7 @@ function BottomSheetFooterComponent({
         },
       ],
     };
-  }, [bottomInset, animatedKeyboardState, animatedFooterPosition]);
+  });
   const containerStyle = useMemo(
     () => [styles.container, style, containerAnimatedStyle],
     [style, containerAnimatedStyle]

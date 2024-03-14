@@ -108,10 +108,16 @@ export const useScrollEventsHandlersDefault: ScrollEventsHandlersHookType = (
         _lockableScrollableContentOffsetY.value = event.contentOffset.y;
       },
       [
+        preserveScrollMomentum,
+        scrollBuffer,
+        awaitingFirstScroll,
+        isScrollableLocked,
+        animatedSheetState,
+        animatedScrollableState,
+        _lockableScrollableContentOffsetY,
+        isScrollEnded,
         scrollableRef,
         scrollableContentOffsetY,
-        animatedScrollableState,
-        animatedSheetState,
       ]
     );
   const handleOnBeginDrag: ScrollEventHandlerCallbackType<ScrollEventContextType> =
@@ -166,8 +172,14 @@ export const useScrollEventsHandlersDefault: ScrollEventsHandlersHookType = (
       },
       [
         scrollableContentOffsetY,
-        animatedSheetState,
+        _lockableScrollableContentOffsetY,
         rootScrollableContentOffsetY,
+        awaitingFirstScroll,
+        isScrollEnded,
+        scrollBuffer,
+        preserveScrollMomentum,
+        animatedSheetState,
+        isScrollableLocked,
       ]
     );
   const handleOnEndDrag: ScrollEventHandlerCallbackType<ScrollEventContextType> =
@@ -192,10 +204,13 @@ export const useScrollEventsHandlersDefault: ScrollEventsHandlersHookType = (
         }
       },
       [
+        awaitingFirstScroll,
+        isScrollEnded,
+        animatedScrollableState,
+        animatedAnimationState,
         scrollableRef,
         scrollableContentOffsetY,
-        animatedAnimationState,
-        animatedScrollableState,
+        _lockableScrollableContentOffsetY,
         rootScrollableContentOffsetY,
       ]
     );
@@ -221,10 +236,13 @@ export const useScrollEventsHandlersDefault: ScrollEventsHandlersHookType = (
         }
       },
       [
-        scrollableContentOffsetY,
-        scrollableRef,
-        animatedAnimationState,
         animatedScrollableState,
+        animatedAnimationState,
+        preserveScrollMomentum,
+        isScrollEnded,
+        scrollableRef,
+        scrollableContentOffsetY,
+        _lockableScrollableContentOffsetY,
         rootScrollableContentOffsetY,
       ]
     );

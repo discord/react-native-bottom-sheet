@@ -91,14 +91,6 @@ export const useNormalizedSnapPoints = (
       _normalizedSnapPoints.indexOf(dynamicSnapPoint);
 
     return _normalizedSnapPoints;
-  }, [
-    containerHeight.value,
-    snapPoints,
-    enableDynamicSizing,
-    handleHeight.value,
-    contentHeight.value,
-    maxDynamicContentSize,
-    dynamicSnapPointIndex,
-  ]);
+  });
   return [normalizedSnapPoints, dynamicSnapPointIndex];
 };

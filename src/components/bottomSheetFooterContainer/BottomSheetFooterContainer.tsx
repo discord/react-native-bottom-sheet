@@ -36,14 +36,7 @@ const BottomSheetFooterContainerComponent = ({
       animatedHandleHeight.value;
 
     return footerTranslateY;
-  }, [
-    animatedKeyboardHeightInContainer,
-    animatedContainerHeight,
-    animatedPosition,
-    animatedKeyboardState,
-    animatedFooterHeight,
-    animatedHandleHeight,
-  ]);
+  });
   //#endregion
 
   return renderFooter({ animatedFooterPosition });

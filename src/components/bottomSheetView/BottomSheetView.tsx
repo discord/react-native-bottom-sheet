@@ -42,19 +42,12 @@ function BottomSheetViewComponent({
       paddingBottom: 0,
     };
   }, [flattenContainerStyle]);
-  const spaceStyle = useAnimatedStyle(
-    () => ({
-      opacity: 0,
-      height: enableFooterMarginAdjustment
-        ? animatedFooterHeight.value + containerStylePaddingBottom
-        : containerStylePaddingBottom,
-    }),
-    [
-      enableFooterMarginAdjustment,
-      containerStylePaddingBottom,
-      animatedFooterHeight,
-    ]
-  );
+  const spaceStyle = useAnimatedStyle(() => ({
+    opacity: 0,
+    height: enableFooterMarginAdjustment
+      ? animatedFooterHeight.value + containerStylePaddingBottom
+      : containerStylePaddingBottom,
+  }));
   //#endregion
 
   //#region callbacks

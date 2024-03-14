@@ -92,6 +92,7 @@ export const useGestureEventsHandlersDefault = () => {
       animatedPosition,
       animatedKeyboardState,
       animatedScrollableContentOffsetY,
+      context,
     ]
   );
   const handleOnChange: GestureEventHandlerCallbackType = useWorkletCallback(
@@ -246,6 +247,7 @@ export const useGestureEventsHandlersDefault = () => {
       animatedPosition,
       animatedScrollableType,
       animatedScrollableContentOffsetY,
+      context,
     ]
   );
   const handleOnEnd: GestureEventHandlerCallbackType = useWorkletCallback(
@@ -379,6 +381,7 @@ export const useGestureEventsHandlersDefault = () => {
       animatedSnapPoints,
       animatedScrollableContentOffsetY,
       animateToPosition,
+      context,
     ]
   );
   const handleOnFinalize: GestureEventHandlerCallbackType = useWorkletCallback(

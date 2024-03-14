@@ -27,12 +27,9 @@ function BottomSheetRefreshControlComponent({
   //#endregion
 
   //#region variables
-  const animatedProps = useAnimatedProps(
-    () => ({
-      enabled: animatedScrollableState.value === SCROLLABLE_STATE.UNLOCKED,
-    }),
-    [animatedScrollableState.value]
-  );
+  const animatedProps = useAnimatedProps(() => ({
+    enabled: animatedScrollableState.value === SCROLLABLE_STATE.UNLOCKED,
+  }));
   const gesture = useMemo(
     () =>
       Gesture.Simultaneous(

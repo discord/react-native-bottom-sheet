@@ -72,26 +72,19 @@ export function createBottomSheetScrollableComponent<T, P>(
     //#endregion
 
     //#region variables
-    const scrollableAnimatedProps = useAnimatedProps(
-      () => ({
-        ...(preserveScrollMomentum
-          ? {}
-          : {
-              decelerationRate:
-                SCROLLABLE_DECELERATION_RATE_MAPPER[
-                  animatedScrollableState.value
-                ],
-            }),
-        showsVerticalScrollIndicator: showsVerticalScrollIndicator
-          ? animatedScrollableState.value === SCROLLABLE_STATE.UNLOCKED
-          : showsVerticalScrollIndicator,
-      }),
-      [
-        animatedScrollableState,
-        showsVerticalScrollIndicator,
-        preserveScrollMomentum,
-      ]
-    );
+    const scrollableAnimatedProps = useAnimatedProps(() => ({
+      ...(preserveScrollMomentum
+        ? {}
+        : {
+            decelerationRate:
+              SCROLLABLE_DECELERATION_RATE_MAPPER[
+                animatedScrollableState.value
+              ],
+          }),
+      showsVerticalScrollIndicator: showsVerticalScrollIndicator
+        ? animatedScrollableState.value === SCROLLABLE_STATE.UNLOCKED
+        : showsVerticalScrollIndicator,
+    }));
 
     const nativeGesture = useMemo(
       () =>
@@ -120,14 +113,11 @@ export function createBottomSheetScrollableComponent<T, P>(
     //#endregion
 
     //#region styles
-    const containerAnimatedStyle = useAnimatedStyle(
-      () => ({
-        marginBottom: enableFooterMarginAdjustment
-          ? animatedFooterHeight.value
-          : 0,
-      }),
-      [animatedFooterHeight.value, enableFooterMarginAdjustment]
-    );
+    const containerAnimatedStyle = useAnimatedStyle(() => ({
+      marginBottom: enableFooterMarginAdjustment
+        ? animatedFooterHeight.value
+        : 0,
+    }));
     const containerStyle = useMemo(() => {
       return enableFooterMarginAdjustment
         ? [

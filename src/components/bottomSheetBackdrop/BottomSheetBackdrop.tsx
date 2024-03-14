@@ -96,18 +96,15 @@ const BottomSheetBackdropComponent = ({
   //#endregion
 
   //#region styles
-  const containerAnimatedStyle = useAnimatedStyle(
-    () => ({
-      opacity: interpolate(
-        animatedIndex.value,
-        [-1, disappearsOnIndex, appearsOnIndex],
-        [0, 0, opacity],
-        Extrapolation.CLAMP
-      ),
-      flex: 1,
-    }),
-    [animatedIndex.value, appearsOnIndex, disappearsOnIndex, opacity]
-  );
+  const containerAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: interpolate(
+      animatedIndex.value,
+      [-1, disappearsOnIndex, appearsOnIndex],
+      [0, 0, opacity],
+      Extrapolation.CLAMP
+    ),
+    flex: 1,
+  }));
   const containerStyle = useMemo(
     () => [styles.container, style, containerAnimatedStyle],
     [style, containerAnimatedStyle]
@@ -122,8 +119,7 @@ const BottomSheetBackdropComponent = ({
         return;
       }
       runOnJS(handleContainerTouchability)(shouldDisableTouchability);
-    },
-    [disappearsOnIndex]
+    }
   );
 
   // addressing updating the state after unmounting.
