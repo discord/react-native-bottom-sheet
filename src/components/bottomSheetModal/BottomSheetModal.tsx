@@ -15,10 +15,10 @@ import {
   DEFAULT_STACK_BEHAVIOR,
   DEFAULT_ENABLE_DISMISS_ON_CLOSE,
 } from './constants';
+import type { SNAP_POINT_TYPE } from '../../constants';
 import type { BottomSheetModalMethods, BottomSheetMethods } from '../../types';
 import type { BottomSheetModalProps } from './types';
 import { id } from '../../utilities/id';
-import { SNAP_POINT_TYPE } from 'src/constants';
 
 type BottomSheetModal = BottomSheetModalMethods;
 
