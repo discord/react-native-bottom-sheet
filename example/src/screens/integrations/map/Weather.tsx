@@ -10,8 +10,8 @@ import { ShowcaseLabel, useShowcaseTheme } from '@gorhom/showcase-template';
 import { MIDDLE_SNAP_POINT } from './LocationListBottomSheet';
 
 interface WeatherProps {
-  animatedPosition: Animated.SharedValue<number>;
-  animatedIndex: Animated.SharedValue<number>;
+  animatedPosition: SharedValue<number>;
+  animatedIndex: SharedValue<number>;
 }
 
 const SPACE = 8;

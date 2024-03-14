@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
-import type Animated from 'react-native-reanimated';
+import type { SharedValue } from 'react-native-reanimated';
 import { useBottomSheetInternal } from './useBottomSheetInternal';
 import { getRefNativeTag } from '../utilities/getRefNativeTag';
 import type { SCROLLABLE_TYPE } from '../constants';
@@ -9,7 +9,7 @@ import { Platform } from 'react-native';
 export const useScrollableSetter = (
   ref: React.RefObject<Scrollable>,
   type: SCROLLABLE_TYPE,
-  contentOffsetY: Animated.SharedValue<number>,
+  contentOffsetY: SharedValue<number>,
   refreshable: boolean,
   scrollBuffer: number | undefined,
   preserveScrollMomentum: boolean | undefined,

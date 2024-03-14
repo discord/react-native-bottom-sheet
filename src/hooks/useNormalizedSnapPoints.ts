@@ -20,7 +20,7 @@ import {
  * @param handleHeight handle size.
  * @param enableDynamicSizing
  * @param maxDynamicContentSize
- * @returns {Animated.SharedValue<number[]>}
+ * @returns {SharedValue<number[]>}
  */
 export const useNormalizedSnapPoints = (
   snapPoints: BottomSheetProps['snapPoints'],

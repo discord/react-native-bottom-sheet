@@ -2,7 +2,6 @@ import {
   scrollTo,
   useAnimatedReaction,
   useSharedValue,
-  useWorkletCallback,
 } from 'react-native-reanimated';
 import { useBottomSheetInternal } from './useBottomSheetInternal';
 import { ANIMATION_STATE, SCROLLABLE_STATE, SHEET_STATE } from '../constants';
@@ -11,6 +10,7 @@ import type {
   ScrollEventHandlerCallbackType,
 } from '../types';
 import { Platform } from 'react-native';
+import { useCallback } from 'react';
 
 export type ScrollEventContextType = {
   initialContentOffsetY: number;
@@ -47,8 +47,9 @@ export const useScrollEventsHandlersDefault: ScrollEventsHandlersHookType = (
 
   //#region callbacks
   const handleOnScroll: ScrollEventHandlerCallbackType<ScrollEventContextType> =
-    useWorkletCallback(
+    useCallback(
       (event, context) => {
+        'worklet';
         /**
          * When a scrollBuffer is provided, we take locking the scrollable into our own hands.
          * We need to do this because it's not possible to know the direction of the scroll during
@@ -121,8 +122,9 @@ export const useScrollEventsHandlersDefault: ScrollEventsHandlersHookType = (
       ]
     );
   const handleOnBeginDrag: ScrollEventHandlerCallbackType<ScrollEventContextType> =
-    useWorkletCallback(
+    useCallback(
       (event, context) => {
+        'worklet';
         const y = event.contentOffset.y;
         scrollableContentOffsetY.value = y;
         _lockableScrollableContentOffsetY.value = y;
@@ -183,8 +185,9 @@ export const useScrollEventsHandlersDefault: ScrollEventsHandlersHookType = (
       ]
     );
   const handleOnEndDrag: ScrollEventHandlerCallbackType<ScrollEventContextType> =
-    useWorkletCallback(
+    useCallback(
       ({ contentOffset: { y } }, context) => {
+        'worklet';
         awaitingFirstScroll.value = false;
         isScrollEnded.value = true;
         if (animatedScrollableState.value === SCROLLABLE_STATE.LOCKED) {
@@ -215,8 +218,9 @@ export const useScrollEventsHandlersDefault: ScrollEventsHandlersHookType = (
       ]
     );
   const handleOnMomentumEnd: ScrollEventHandlerCallbackType<ScrollEventContextType> =
-    useWorkletCallback(
+    useCallback(
       ({ contentOffset: { y } }, context) => {
+        'worklet';
         if (animatedScrollableState.value === SCROLLABLE_STATE.LOCKED) {
           if (!(preserveScrollMomentum && isScrollEnded.value)) {
             const lockPosition = context.shouldLockInitialPosition

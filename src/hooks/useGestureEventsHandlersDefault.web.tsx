@@ -1,9 +1,5 @@
 import { Keyboard, Platform } from 'react-native';
-import {
-  runOnJS,
-  useSharedValue,
-  useWorkletCallback,
-} from 'react-native-reanimated';
+import { runOnJS, useSharedValue } from 'react-native-reanimated';
 import { useBottomSheetInternal } from './useBottomSheetInternal';
 import {
   ANIMATION_SOURCE,
@@ -15,6 +11,7 @@ import {
 import type { GestureEventHandlerCallbackType } from '../types';
 import { clamp } from '../utilities/clamp';
 import { snapPoint } from '../utilities/snapPoint';
+import { useCallback } from 'react';
 
 type GestureEventContextType = {
   initialPosition: number;
@@ -66,8 +63,9 @@ export const useGestureEventsHandlersDefault = () => {
   //#endregion
 
   //#region gesture methods
-  const handleOnStart: GestureEventHandlerCallbackType = useWorkletCallback(
+  const handleOnStart: GestureEventHandlerCallbackType = useCallback(
     function handleOnStart(__, { translationY }) {
+      'worklet';
       // cancel current animation
       stopAnimation();
 
@@ -95,8 +93,9 @@ export const useGestureEventsHandlersDefault = () => {
       context,
     ]
   );
-  const handleOnChange: GestureEventHandlerCallbackType = useWorkletCallback(
+  const handleOnChange: GestureEventHandlerCallbackType = useCallback(
     function handleOnChange(source, { translationY }) {
+      'worklet';
       let highestSnapPoint = animatedHighestSnapPoint.value;
 
       translationY = translationY - context.value.initialTranslationY;
@@ -250,8 +249,9 @@ export const useGestureEventsHandlersDefault = () => {
       context,
     ]
   );
-  const handleOnEnd: GestureEventHandlerCallbackType = useWorkletCallback(
+  const handleOnEnd: GestureEventHandlerCallbackType = useCallback(
     function handleOnEnd(source, { translationY, absoluteY, velocityY }) {
+      'worklet';
       const highestSnapPoint = animatedHighestSnapPoint.value;
       const isSheetAtHighestSnapPoint =
         animatedPosition.value === highestSnapPoint;
@@ -384,8 +384,9 @@ export const useGestureEventsHandlersDefault = () => {
       context,
     ]
   );
-  const handleOnFinalize: GestureEventHandlerCallbackType = useWorkletCallback(
+  const handleOnFinalize: GestureEventHandlerCallbackType = useCallback(
     function handleOnFinalize() {
+      'worklet';
       resetContext(context);
     },
     [context]

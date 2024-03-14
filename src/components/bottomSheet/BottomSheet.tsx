@@ -18,9 +18,9 @@ import Animated, {
   Extrapolate,
   runOnUI,
   cancelAnimation,
-  useWorkletCallback,
   WithSpringConfig,
   WithTimingConfig,
+  type SharedValue,
 } from 'react-native-reanimated';
 import { State } from 'react-native-gesture-handler';
 import {
@@ -205,7 +205,7 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
     });
     const animatedContainerOffset = useReactiveSharedValue(
       _providedContainerOffset ?? INITIAL_CONTAINER_OFFSET
-    ) as Animated.SharedValue<Insets>;
+    ) as SharedValue<Insets>;
     const animatedHandleHeight = useReactiveSharedValue(
       _providedHandleHeight ?? INITIAL_HANDLE_HEIGHT
     );
@@ -530,7 +530,7 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
     /**
      * Calculate the next position based on keyboard state.
      */
-    const getNextPosition = useWorkletCallback(
+    const getNextPosition = useCallback(
       function getNextPosition() {
         'worklet';
         const currentIndex = animatedCurrentIndex.value;
@@ -665,7 +665,8 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
     //#endregion
 
     //#region animation
-    const stopAnimation = useWorkletCallback(() => {
+    const stopAnimation = useCallback(() => {
+      'worklet';
       cancelAnimation(animatedPosition);
       isForcedClosing.value = false;
       animatedAnimationSource.value = ANIMATION_SOURCE.NONE;
@@ -676,8 +677,9 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
       animatedAnimationSource,
       animatedAnimationState,
     ]);
-    const animateToPositionCompleted = useWorkletCallback(
+    const animateToPositionCompleted = useCallback(
       function animateToPositionCompleted(isFinished?: boolean) {
+        'worklet';
         isForcedClosing.value = false;
 
         if (!isFinished) {
@@ -697,15 +699,24 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
         animatedAnimationState.value = ANIMATION_STATE.STOPPED;
         animatedNextPosition.value = INITIAL_VALUE;
         animatedNextPositionIndex.value = INITIAL_VALUE;
-      }
+      },
+      [
+        animatedAnimationSource,
+        animatedAnimationState,
+        animatedCurrentIndex,
+        animatedNextPosition,
+        animatedNextPositionIndex,
+        isForcedClosing,
+      ]
     );
-    const animateToPosition: AnimateToPositionType = useWorkletCallback(
+    const animateToPosition: AnimateToPositionType = useCallback(
       function animateToPosition(
         position: number,
         source: ANIMATION_SOURCE,
         velocity: number = 0,
         configs?: WithTimingConfig | WithSpringConfig
       ) {
+        'worklet';
         if (
           position === animatedPosition.value ||
           position === undefined ||
@@ -774,8 +785,9 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
      *
      * @param targetPosition position to be set.
      */
-    const setToPosition = useWorkletCallback(
+    const setToPosition = useCallback(
       function setToPosition(targetPosition: number) {
+        'worklet';
         if (
           targetPosition === animatedPosition.value ||
           targetPosition === undefined ||
@@ -879,11 +891,12 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
         animatedNextPositionIndex,
       ]
     );
-    const handleSnapToPosition = useWorkletCallback(
+    const handleSnapToPosition = useCallback(
       function handleSnapToPosition(
         position: number | string,
         animationConfigs?: WithSpringConfig | WithTimingConfig
       ) {
+        'worklet';
         print({
           component: BottomSheet.name,
           method: handleSnapToPosition.name,

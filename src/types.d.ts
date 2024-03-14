@@ -151,8 +151,8 @@ export type GestureEventsHandlersHookType = () => {
 
 export type GestureHandlersHookType = (
   source: GESTURE_SOURCE,
-  state: Animated.SharedValue<State>,
-  gestureSource: Animated.SharedValue<GESTURE_SOURCE>,
+  state: SharedValue<State>,
+  gestureSource: SharedValue<GESTURE_SOURCE>,
   onStart: GestureEventHandlerCallbackType,
   onChange: GestureEventHandlerCallbackType,
   onEnd: GestureEventHandlerCallbackType,

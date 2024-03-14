@@ -1,4 +1,4 @@
-import Animated, { useWorkletCallback } from 'react-native-reanimated';
+import type { SharedValue } from 'react-native-reanimated';
 import {
   State,
   GestureStateChangeEvent,
@@ -9,18 +9,20 @@ import type {
   GestureEventHandlerCallbackType,
   GestureHandlersHookType,
 } from '../types';
+import { useCallback } from 'react';
 
 export const useGestureHandler: GestureHandlersHookType = (
   source: GESTURE_SOURCE,
-  state: Animated.SharedValue<State>,
-  gestureSource: Animated.SharedValue<GESTURE_SOURCE>,
+  state: SharedValue<State>,
+  gestureSource: SharedValue<GESTURE_SOURCE>,
   onStart: GestureEventHandlerCallbackType,
   onChange: GestureEventHandlerCallbackType,
   onEnd: GestureEventHandlerCallbackType,
   onFinalize: GestureEventHandlerCallbackType
 ) => {
-  const handleOnStart = useWorkletCallback(
+  const handleOnStart = useCallback(
     (event: GestureStateChangeEvent<PanGestureHandlerEventPayload>) => {
+      'worklet';
       state.value = State.BEGAN;
       gestureSource.value = source;
 
@@ -30,8 +32,9 @@ export const useGestureHandler: GestureHandlersHookType = (
     [state, gestureSource, source, onStart]
   );
 
-  const handleOnChange = useWorkletCallback(
+  const handleOnChange = useCallback(
     (event: GestureStateChangeEvent<PanGestureHandlerEventPayload>) => {
+      'worklet';
       if (gestureSource.value !== source) {
         return;
       }
@@ -42,8 +45,9 @@ export const useGestureHandler: GestureHandlersHookType = (
     [state, gestureSource, source, onChange]
   );
 
-  const handleOnEnd = useWorkletCallback(
+  const handleOnEnd = useCallback(
     (event: GestureStateChangeEvent<PanGestureHandlerEventPayload>) => {
+      'worklet';
       if (gestureSource.value !== source) {
         return;
       }
@@ -56,8 +60,9 @@ export const useGestureHandler: GestureHandlersHookType = (
     [state, gestureSource, source, onEnd]
   );
 
-  const handleOnFinalize = useWorkletCallback(
+  const handleOnFinalize = useCallback(
     (event: GestureStateChangeEvent<PanGestureHandlerEventPayload>) => {
+      'worklet';
       if (gestureSource.value !== source) {
         return;
       }
