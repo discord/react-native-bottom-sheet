@@ -105,12 +105,24 @@ export interface BottomSheetProps
 
   //#region layout
   /**
+   * Handle height helps to calculate the internal container and sheet layouts,
+   * if `handleComponent` is provided, the library internally will calculate its layout,
+   * unless `handleHeight` is provided.
+   * @type number | SharedValue<number>;
+   */
+  handleHeight?: number | SharedValue<number>;
+  /**
    * Container height helps to calculate the internal sheet layouts,
    * if `containerHeight` not provided, the library internally will calculate it,
    * however this will cause an extra re-rendering.
    * @type number | SharedValue<number>;
    */
   containerHeight?: number | SharedValue<number>;
+  /**
+   * Content height helps dynamic snap points calculation.
+   * @type number | SharedValue<number>;
+   */
+  contentHeight?: number | SharedValue<number>;
   /**
    * Container offset helps to accurately detect container offsets.
    * @type SharedValue<number>;

@@ -125,7 +125,9 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
       android_keyboardInputMode = DEFAULT_KEYBOARD_INPUT_MODE,
 
       // layout
+      handleHeight: _providedHandleHeight,
       containerHeight: _providedContainerHeight,
+      contentHeight: _providedContentHeight,
       containerOffset: _providedContainerOffset,
       topInset = 0,
       bottomInset = 0,
@@ -204,11 +206,13 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
     const animatedContainerOffset = useReactiveSharedValue(
       _providedContainerOffset ?? INITIAL_CONTAINER_OFFSET
     ) as Animated.SharedValue<Insets>;
-    const animatedHandleHeight = useReactiveSharedValue<number>(
-      INITIAL_HANDLE_HEIGHT
+    const animatedHandleHeight = useReactiveSharedValue(
+      _providedHandleHeight ?? INITIAL_HANDLE_HEIGHT
     );
     const animatedFooterHeight = useSharedValue(0);
-    const animatedContentHeight = useSharedValue(INITIAL_CONTAINER_HEIGHT);
+    const animatedContentHeight = useReactiveSharedValue(
+      _providedContentHeight ?? INITIAL_CONTAINER_HEIGHT
+    );
     const [animatedSnapPoints, animatedDynamicSnapPointIndex] =
       useNormalizedSnapPoints(
         _providedSnapPoints,
@@ -260,6 +264,14 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
       }
 
       let isHandleHeightCalculated = false;
+      // handle height is provided.
+      if (
+        _providedHandleHeight !== null &&
+        _providedHandleHeight !== undefined &&
+        typeof _providedHandleHeight === 'number'
+      ) {
+        isHandleHeightCalculated = true;
+      }
       // handle component is null.
       if (handleComponent === null) {
         animatedHandleHeight.value = 0;
@@ -283,9 +295,10 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
       );
     }, [
       _providedContainerHeight,
-      animatedContainerHeight.value,
+      _providedHandleHeight,
+      animatedContainerHeight,
       animatedHandleHeight,
-      animatedSnapPoints.value,
+      animatedSnapPoints,
       handleComponent,
     ]);
     const isInTemporaryPosition = useSharedValue(false);
@@ -1274,6 +1287,14 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
     );
     const contentContainerAnimatedStyle = useAnimatedStyle(() => {
       /**
+       * if content height was provided, then we skip setting
+       * calculated height.
+       */
+      if (_providedContentHeight) {
+        return {};
+      }
+
+      /**
        * if dynamic sizing is enabled, and content height
        * is still not set, then we exit method.
        */
@@ -1292,9 +1313,10 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
       };
     }, [
       enableDynamicSizing,
-      animatedContentHeight.value,
-      animatedContentHeightMax.value,
+      animatedContentHeight,
+      animatedContentHeightMax,
       _providedAnimationConfigs,
+      _providedContentHeight,
     ]);
     const contentContainerStyle = useMemo(
       () => [styles.contentContainer, contentContainerAnimatedStyle],
