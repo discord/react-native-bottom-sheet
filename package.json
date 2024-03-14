@@ -53,6 +53,7 @@
     "auto-changelog": "^2.4.0",
     "copyfiles": "^2.4.1",
     "eslint": "^8.21.0",
+    "eslint-plugin-bottom-sheet": "link:eslint-plugin-bottom-sheet",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",
     "husky": "^4.3.8",
