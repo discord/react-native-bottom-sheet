@@ -1436,6 +1436,7 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
           method: 'useAnimatedReaction::OnSnapPointChange',
           params: {
             snapPoints,
+            containerHeight,
           },
         });
 
@@ -1479,7 +1480,11 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
     useAnimatedReaction(
       () => ({
         _keyboardState: animatedKeyboardState.value,
-        _keyboardHeight: animatedKeyboardHeight.value,
+        _keyboardHeight:
+          Platform.OS === 'android' &&
+          android_keyboardInputMode === KEYBOARD_INPUT_MODE.adjustResize
+            ? 0
+            : animatedKeyboardHeight.value,
       }),
       (result, _previousResult) => {
         const { _keyboardState, _keyboardHeight } = result;
