@@ -58,6 +58,7 @@ import {
   getKeyboardAnimationConfigs,
   normalizeSnapPoint,
   print,
+  floatingPointEquals,
 } from '../../utilities';
 import {
   DEFAULT_OVER_DRAG_RESISTANCE_FACTOR,
@@ -78,7 +79,7 @@ import {
   DEFAULT_DYNAMIC_SIZING,
   DEFAULT_ACCESSIBLE,
   DEFAULT_ACCESSIBILITY_LABEL,
-  DEFAULT_ACCESSIBILITY_ROLE
+  DEFAULT_ACCESSIBILITY_ROLE,
 } from './constants';
 import type { BottomSheetMethods, Insets } from '../../types';
 import type { BottomSheetProps, AnimateToPositionType } from './types';
@@ -328,7 +329,7 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
       // extended position = container height - sheet height
       const extendedPosition =
         animatedContainerHeight.value - animatedSheetHeight.value;
-      if (animatedPosition.value === extendedPosition)
+      if (floatingPointEquals(animatedPosition.value, extendedPosition))
         return SHEET_STATE.EXTENDED;
 
       // extended position with keyboard =
@@ -344,13 +345,16 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
       if (
         keyboardBehavior === KEYBOARD_BEHAVIOR.interactive &&
         isInTemporaryPosition.value &&
-        animatedPosition.value === extendedPositionWithKeyboard
+        floatingPointEquals(
+          animatedPosition.value,
+          extendedPositionWithKeyboard
+        )
       ) {
         return SHEET_STATE.EXTENDED;
       }
 
       // fill parent = 0
-      if (animatedPosition.value === 0) {
+      if (floatingPointEquals(animatedPosition.value, 0)) {
         return SHEET_STATE.FILL_PARENT;
       }
 
@@ -633,7 +637,11 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
       [_providedOnChange, animatedCurrentIndex]
     );
     const handleOnAnimate = useCallback(
-      function handleOnAnimate(toPoint: number, source: ANIMATION_SOURCE, snapPoints: number[]) {
+      function handleOnAnimate(
+        toPoint: number,
+        source: ANIMATION_SOURCE,
+        snapPoints: number[]
+      ) {
         const closedPosition = animatedClosedPosition.value;
         const toIndex =
           toPoint === closedPosition ? -1 : snapPoints.indexOf(toPoint);
@@ -700,10 +708,10 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
         configs?: WithTimingConfig | WithSpringConfig
       ) {
         if (
-          position === animatedPosition.value ||
+          floatingPointEquals(position, animatedPosition.value) ||
           position === undefined ||
           (animatedAnimationState.value === ANIMATION_STATE.RUNNING &&
-            position === animatedNextPosition.value)
+            floatingPointEquals(position, animatedNextPosition.value))
         ) {
           return;
         }

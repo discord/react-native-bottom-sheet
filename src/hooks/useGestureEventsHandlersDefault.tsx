@@ -18,6 +18,7 @@ import type {
 } from '../types';
 import { clamp } from '../utilities/clamp';
 import { snapPoint } from '../utilities/snapPoint';
+import { floatingPointEquals } from '../utilities';
 
 type GestureEventContextType = {
   initialPosition: number;
@@ -136,7 +137,7 @@ export const useGestureEventsHandlersDefault: GestureEventsHandlersHookType =
         if (
           source === GESTURE_SOURCE.CONTENT &&
           isScrollableRefreshable.value &&
-          animatedPosition.value === highestSnapPoint
+          floatingPointEquals(animatedPosition.value, highestSnapPoint)
         ) {
           return;
         }
@@ -148,7 +149,10 @@ export const useGestureEventsHandlersDefault: GestureEventsHandlersHookType =
          * a negative scrollable content offset when the scrollable is not locked.
          */
         const negativeScrollableContentOffset =
-          (context.value.initialPosition === highestSnapPoint &&
+          (floatingPointEquals(
+            context.value.initialPosition,
+            highestSnapPoint
+          ) &&
             source === GESTURE_SOURCE.CONTENT) ||
           !context.value.isScrollablePositionLocked
             ? animatedScrollableContentOffsetY.value * -1
@@ -184,7 +188,7 @@ export const useGestureEventsHandlersDefault: GestureEventsHandlersHookType =
         if (
           context.value.isScrollablePositionLocked &&
           source === GESTURE_SOURCE.CONTENT &&
-          animatedPosition.value === highestSnapPoint
+          floatingPointEquals(animatedPosition.value, highestSnapPoint)
         ) {
           context.value = {
             ...context.value,
@@ -258,8 +262,10 @@ export const useGestureEventsHandlersDefault: GestureEventsHandlersHookType =
     const handleOnEnd: GestureEventHandlerCallbackType = useWorkletCallback(
       function handleOnEnd(source, { translationY, absoluteY, velocityY }) {
         const highestSnapPoint = animatedHighestSnapPoint.value;
-        const isSheetAtHighestSnapPoint =
-          animatedPosition.value === highestSnapPoint;
+        const isSheetAtHighestSnapPoint = floatingPointEquals(
+          animatedPosition.value,
+          highestSnapPoint
+        );
 
         /**
          * if scrollable is refreshable and sheet position at the highest
@@ -354,7 +360,7 @@ export const useGestureEventsHandlersDefault: GestureEventsHandlersHookType =
          * if destination point is the same as the current position,
          * then no need to perform animation.
          */
-        if (destinationPoint === animatedPosition.value) {
+        if (floatingPointEquals(destinationPoint, animatedPosition.value)) {
           return;
         }
 
