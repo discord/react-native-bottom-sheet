@@ -1,13 +1,8 @@
 import React, { forwardRef } from 'react';
-import {
-  GestureDetector,
-  SimultaneousGesture,
-} from 'react-native-gesture-handler';
 import BottomSheetRefreshControl from '../bottomSheetRefreshControl';
 import { styles } from './styles';
 
 interface ScrollableContainerProps {
-  nativeGesture: SimultaneousGesture;
   refreshControl: any;
   progressViewOffset: any;
   refreshing: any;
@@ -18,7 +13,6 @@ interface ScrollableContainerProps {
 export const ScrollableContainer = forwardRef<any, ScrollableContainerProps>(
   function ScrollableContainer(
     {
-      nativeGesture,
       refreshControl: _refreshControl,
       refreshing,
       progressViewOffset,
@@ -28,18 +22,13 @@ export const ScrollableContainer = forwardRef<any, ScrollableContainerProps>(
     },
     ref
   ) {
-    const Scrollable = (
-      <GestureDetector gesture={nativeGesture}>
-        <ScrollableComponent ref={ref} {...rest} />
-      </GestureDetector>
-    );
+    const Scrollable = <ScrollableComponent ref={ref} {...rest} />;
 
     return onRefresh ? (
       <BottomSheetRefreshControl
         refreshing={refreshing}
         progressViewOffset={progressViewOffset}
         onRefresh={onRefresh}
-        scrollableGesture={nativeGesture}
         style={styles.container}
       >
         {Scrollable}

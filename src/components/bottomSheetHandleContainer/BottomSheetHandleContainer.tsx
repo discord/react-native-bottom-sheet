@@ -56,8 +56,10 @@ function BottomSheetHandleContainerComponent({
       .enabled(enableHandlePanningGesture!)
       .shouldCancelWhenOutside(false)
       .runOnJS(false)
+      .onBegin(handlePanGestureHandler.handleOnBegin)
       .onStart(handlePanGestureHandler.handleOnStart)
       .onChange(handlePanGestureHandler.handleOnChange)
+      .onUpdate(handlePanGestureHandler.handleOnUpdate)
       .onEnd(handlePanGestureHandler.handleOnEnd)
       .onFinalize(handlePanGestureHandler.handleOnFinalize);
 

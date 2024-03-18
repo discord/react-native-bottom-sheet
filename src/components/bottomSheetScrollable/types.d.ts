@@ -17,7 +17,6 @@ import type {
   ScrollResponderMixin,
 } from 'react-native';
 import type Animated from 'react-native-reanimated';
-import type { ScrollEventsHandlersHookType } from '../../types';
 import type { FlashListProps } from '@shopify/flash-list';
 
 export interface BottomSheetScrollableProps {
@@ -38,31 +37,6 @@ export interface BottomSheetScrollableProps {
    * @default useEffect
    */
   focusHook?: (effect: EffectCallback, deps?: DependencyList) => void;
-
-  /**
-   * Custom hook to provide scroll events handler, which will allow advance and
-   * customize handling for scrollables.
-   *
-   * @warning this is an experimental feature and the hook signature can change without a major version bump.
-   * @type ScrollEventsHandlersHookType
-   * @default useScrollEventsHandlersDefault
-   */
-  scrollEventsHandlersHook?: ScrollEventsHandlersHookType;
-
-  /**
-   * An initial scroll buffer to prevent the bottom sheet from immediately following the scroll gesture.
-   */
-  scrollBuffer?: number;
-
-  /**
-   * Whether or not to preserve scroll momentum when expanding a scrollable bottom sheet component.
-   */
-  preserveScrollMomentum?: boolean;
-
-  /**
-   * The optional lockable scrollable content offset ref, which will remain the same value when scrollable is locked.
-   */
-  lockableScrollableContentOffsetY?: Animated.SharedValue<number>;
 }
 
 export type ScrollableProps<T> =
@@ -152,9 +126,7 @@ export interface BottomSheetFlatListMethods {
 //#region FlatList
 export type BottomSheetFlashListProps<T> = Omit<
   FlashListProps<T>,
-  | 'decelerationRate'
-  | 'scrollEventThrottle'
-  | 'renderScrollComponent'
+  'decelerationRate' | 'scrollEventThrottle' | 'renderScrollComponent'
 > &
   BottomSheetScrollableProps & {
     ref?: Ref<BottomSheetFlashListMethods>;

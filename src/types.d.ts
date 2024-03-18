@@ -1,4 +1,3 @@
-import type React from 'react';
 import type {
   FlatList,
   ScrollView,
@@ -9,8 +8,11 @@ import type {
 } from 'react-native';
 import type {
   GestureEventPayload,
+  GestureStateChangeEvent,
   PanGestureHandlerEventPayload,
+  State,
 } from 'react-native-gesture-handler';
+import type Animated from 'react-native-reanimated';
 import type {
   SharedValue,
   WithSpringConfig,
@@ -110,10 +112,6 @@ export interface BottomSheetVariables {
 
 //#region scrollables
 export type Scrollable = FlashList | FlatList | ScrollView | SectionList;
-export type ScrollableRef = {
-  id: number;
-  node: React.RefObject<Scrollable>;
-};
 export type ScrollableEvent = (
   event: Pick<NativeSyntheticEvent<NativeScrollEvent>, 'nativeEvent'>
 ) => void;
@@ -130,21 +128,16 @@ export interface Insets {
 //#endregion
 
 //#region hooks
-export type GestureEventPayloadType = GestureEventPayload &
-  PanGestureHandlerEventPayload;
-
-export type GestureEventContextType = {
-  didStart?: boolean;
-};
-
 export type GestureEventHandlerCallbackType = (
   source: GESTURE_SOURCE,
   event: GestureStateChangeEvent<PanGestureHandlerEventPayload>
 ) => void;
 
 export type GestureEventsHandlersHookType = () => {
+  handleOnBegin: GestureEventHandlerCallbackType;
   handleOnStart: GestureEventHandlerCallbackType;
   handleOnChange: GestureEventHandlerCallbackType;
+  handleOnUpdate: GestureEventHandlerCallbackType;
   handleOnEnd: GestureEventHandlerCallbackType;
   handleOnFinalize: GestureEventHandlerCallbackType;
 };
@@ -153,16 +146,26 @@ export type GestureHandlersHookType = (
   source: GESTURE_SOURCE,
   state: Animated.SharedValue<State>,
   gestureSource: Animated.SharedValue<GESTURE_SOURCE>,
+  onBegin: GestureEventHandlerCallbackType,
   onStart: GestureEventHandlerCallbackType,
   onChange: GestureEventHandlerCallbackType,
+  onUpdate: GestureEventHandlerCallbackType,
   onEnd: GestureEventHandlerCallbackType,
   onFinalize: GestureEventHandlerCallbackType
 ) => {
+  handleOnBegin: (
+    event: GestureStateChangeEvent<PanGestureHandlerEventPayload>
+  ) => void;
   handleOnStart: (
     event: GestureStateChangeEvent<PanGestureHandlerEventPayload>
   ) => void;
   handleOnChange: (
-    event: GestureStateChangeEvent<PanGestureHandlerEventPayload>
+    event: GestureUpdateEvent<
+      PanGestureHandlerEventPayload & PanGestureChangeEventPayload
+    >
+  ) => void;
+  handleOnUpdate: (
+    event: GestureUpdateEvent<PanGestureHandlerEventPayload>
   ) => void;
   handleOnEnd: (
     event: GestureStateChangeEvent<PanGestureHandlerEventPayload>
@@ -177,13 +180,7 @@ type ScrollEventHandlerCallbackType<C = any> = (
   context: C
 ) => void;
 
-export type ScrollEventsHandlersHookType = (
-  ref: React.RefObject<Scrollable>,
-  contentOffsetY: SharedValue<number>,
-  scrollBuffer: number | undefined,
-  preserveScrollMomentum: boolean | undefined,
-  lockableScrollableContentOffsetY: SharedValue<number> | undefined
-) => {
+export type ScrollEventsHandlersHookType = () => {
   handleOnScroll?: ScrollEventHandlerCallbackType;
   handleOnBeginDrag?: ScrollEventHandlerCallbackType;
   handleOnEndDrag?: ScrollEventHandlerCallbackType;

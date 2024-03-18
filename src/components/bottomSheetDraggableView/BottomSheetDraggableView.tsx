@@ -1,6 +1,6 @@
 import React, { useMemo, memo } from 'react';
 import Animated from 'react-native-reanimated';
-import { GestureDetector, Gesture } from 'react-native-gesture-handler';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import {
   useBottomSheetGestureHandlers,
   useBottomSheetInternal,
@@ -9,7 +9,6 @@ import type { BottomSheetDraggableViewProps } from './types';
 import { BottomSheetDraggableContext } from '../../contexts/gesture';
 
 const BottomSheetDraggableViewComponent = ({
-  nativeGestureRef,
   refreshControlGestureRef,
   style,
   children,
@@ -17,6 +16,7 @@ const BottomSheetDraggableViewComponent = ({
 }: BottomSheetDraggableViewProps) => {
   //#region hooks
   const {
+    animatedScrollableRef,
     enableContentPanningGesture,
     simultaneousHandlers: _providedSimultaneousHandlers,
     waitFor,
@@ -31,10 +31,6 @@ const BottomSheetDraggableViewComponent = ({
   //#region variables
   const simultaneousHandlers = useMemo(() => {
     const refs = [];
-
-    if (nativeGestureRef) {
-      refs.push(nativeGestureRef);
-    }
 
     if (refreshControlGestureRef) {
       refs.push(refreshControlGestureRef);
@@ -51,7 +47,7 @@ const BottomSheetDraggableViewComponent = ({
     return refs;
   }, [
     _providedSimultaneousHandlers,
-    nativeGestureRef,
+    animatedScrollableRef,
     refreshControlGestureRef,
   ]);
   const draggableGesture = useMemo(() => {
@@ -59,8 +55,10 @@ const BottomSheetDraggableViewComponent = ({
       .enabled(enableContentPanningGesture)
       .shouldCancelWhenOutside(false)
       .runOnJS(false)
+      .onBegin(contentPanGestureHandler.handleOnBegin)
       .onStart(contentPanGestureHandler.handleOnStart)
       .onChange(contentPanGestureHandler.handleOnChange)
+      .onUpdate(contentPanGestureHandler.handleOnUpdate)
       .onEnd(contentPanGestureHandler.handleOnEnd)
       .onFinalize(contentPanGestureHandler.handleOnFinalize);
 
@@ -68,11 +66,10 @@ const BottomSheetDraggableViewComponent = ({
       gesture = gesture.requireExternalGestureToFail(waitFor);
     }
 
-    if (simultaneousHandlers) {
-      gesture = gesture.simultaneousWithExternalGesture(
-        simultaneousHandlers as any
-      );
-    }
+    gesture = gesture.simultaneousWithExternalGesture(
+      animatedScrollableRef,
+      ...simultaneousHandlers
+    );
 
     if (activeOffsetX) {
       gesture = gesture.activeOffsetX(activeOffsetX);

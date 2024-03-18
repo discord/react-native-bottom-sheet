@@ -21,6 +21,7 @@ import Animated, {
   useWorkletCallback,
   WithSpringConfig,
   WithTimingConfig,
+  useAnimatedRef,
 } from 'react-native-reanimated';
 import { State } from 'react-native-gesture-handler';
 import {
@@ -48,7 +49,6 @@ import {
   KEYBOARD_STATE,
   KEYBOARD_BEHAVIOR,
   SHEET_STATE,
-  SCROLLABLE_STATE,
   KEYBOARD_BLUR_BEHAVIOR,
   KEYBOARD_INPUT_MODE,
   ANIMATION_SOURCE,
@@ -81,7 +81,7 @@ import {
   DEFAULT_ACCESSIBILITY_LABEL,
   DEFAULT_ACCESSIBILITY_ROLE,
 } from './constants';
-import type { BottomSheetMethods, Insets } from '../../types';
+import type { BottomSheetMethods, Insets, Scrollable } from '../../types';
 import type { BottomSheetProps, AnimateToPositionType } from './types';
 import { styles } from './styles';
 
@@ -120,9 +120,6 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
       backgroundStyle: _providedBackgroundStyle,
       handleStyle: _providedHandleStyle,
       handleIndicatorStyle: _providedHandleIndicatorStyle,
-
-      // hooks
-      gestureEventsHandlersHook,
 
       // keyboard
       keyboardBehavior = DEFAULT_KEYBOARD_BEHAVIOR,
@@ -290,6 +287,10 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
     const animatedHandleGestureState = useSharedValue<State>(
       State.UNDETERMINED
     );
+    const isPanGestureMoving = useSharedValue(false);
+    const isScrollHandled = useSharedValue(false);
+    const isScrollEnabled = useSharedValue(false);
+    const panGestureMovedY = useSharedValue(0);
     //#endregion
 
     //#region hooks variables
@@ -297,12 +298,7 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
     const {
       animatedScrollableType,
       animatedScrollableContentOffsetY,
-      animatedScrollableOverrideState,
       isScrollableRefreshable,
-      isScrollableLocked,
-      isScrollEnded,
-      setScrollableRef,
-      removeScrollableRef,
     } = useScrollable();
     // keyboard
     const {
@@ -373,50 +369,6 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
       isInTemporaryPosition,
       keyboardBehavior,
     ]);
-    const animatedScrollableState = useDerivedValue<SCROLLABLE_STATE>(() => {
-      /**
-       * if scrollable override state is set, then we just return its value.
-       */
-      if (
-        animatedScrollableOverrideState.value !== SCROLLABLE_STATE.UNDETERMINED
-      ) {
-        return animatedScrollableOverrideState.value;
-      }
-      /**
-       * if sheet state is fill parent, then unlock scrolling
-       */
-      if (animatedSheetState.value === SHEET_STATE.FILL_PARENT) {
-        return SCROLLABLE_STATE.UNLOCKED;
-      }
-
-      /**
-       * if sheet state is extended, then unlock scrolling
-       */
-      if (animatedSheetState.value === SHEET_STATE.EXTENDED) {
-        return SCROLLABLE_STATE.UNLOCKED;
-      }
-
-      /**
-       * if the current scrollable is blocked from translation, unlock scrolling
-       */
-      if (!isScrollableLocked.value) {
-        return SCROLLABLE_STATE.UNLOCKED;
-      }
-
-      /**
-       * if keyboard is shown and sheet is animating
-       * then we do not lock the scrolling to not lose
-       * current scrollable scroll position.
-       */
-      if (
-        animatedKeyboardState.value === KEYBOARD_STATE.SHOWN &&
-        animatedAnimationState.value === ANIMATION_STATE.RUNNING
-      ) {
-        return SCROLLABLE_STATE.UNLOCKED;
-      }
-
-      return SCROLLABLE_STATE.LOCKED;
-    });
     // dynamic
     const animatedContentHeightMax = useDerivedValue(() => {
       const keyboardHeightInContainer = animatedKeyboardHeightInContainer.value;
@@ -531,6 +483,14 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
 
       return currentIndex;
     }, [android_keyboardInputMode]);
+    const isExpanded = useDerivedValue(() => {
+      const state = animatedSheetState.value;
+      return (
+        state === SHEET_STATE.EXTENDED ||
+        state === SHEET_STATE.OVER_EXTENDED ||
+        state === SHEET_STATE.FILL_PARENT
+      );
+    }, [animatedSheetState]);
     //#endregion
 
     //#region private methods
@@ -1121,6 +1081,8 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
     }));
     //#endregion
 
+    const animatedScrollableRef = useAnimatedRef<Scrollable>();
+
     //#region contexts variables
     const internalContextVariables = useMemo<BottomSheetInternalContextType>(
       () => ({
@@ -1131,10 +1093,11 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
         enablePanDownToClose,
         animatedAnimationState,
         animatedSheetState,
-        animatedScrollableState,
-        animatedScrollableOverrideState,
         animatedContentGestureState,
         animatedHandleGestureState,
+        isPanGestureMoving,
+        isScrollHandled,
+        isScrollEnabled,
         animatedKeyboardState,
         animatedScrollableType,
         animatedIndex,
@@ -1149,11 +1112,11 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
         animatedSnapPoints,
         animatedHighestSnapPoint,
         animatedScrollableContentOffsetY,
+        panGestureMovedY,
         isInTemporaryPosition,
         isContentHeightFixed,
         isScrollableRefreshable,
-        isScrollableLocked,
-        isScrollEnded,
+        isExpanded,
         shouldHandleKeyboardEvents,
         simultaneousHandlers: _providedSimultaneousHandlers,
         waitFor: _providedWaitFor,
@@ -1163,8 +1126,7 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
         failOffsetY: _providedFailOffsetY,
         animateToPosition,
         stopAnimation,
-        setScrollableRef,
-        removeScrollableRef,
+        animatedScrollableRef,
       }),
       [
         animatedIndex,
@@ -1183,14 +1145,15 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
         animatedKeyboardHeightInContainer,
         animatedSheetState,
         animatedHighestSnapPoint,
-        animatedScrollableState,
-        animatedScrollableOverrideState,
         animatedSnapPoints,
         shouldHandleKeyboardEvents,
         animatedScrollableContentOffsetY,
+        panGestureMovedY,
+        isPanGestureMoving,
+        isScrollHandled,
+        isScrollEnabled,
         isScrollableRefreshable,
-        isScrollableLocked,
-        isScrollEnded,
+        isExpanded,
         isContentHeightFixed,
         isInTemporaryPosition,
         enableContentPanningGesture,
@@ -1204,10 +1167,9 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
         _providedActiveOffsetY,
         _providedFailOffsetX,
         _providedFailOffsetY,
-        setScrollableRef,
-        removeScrollableRef,
         animateToPosition,
         stopAnimation,
+        animatedScrollableRef,
       ]
     );
     const externalContextVariables = useMemo(
@@ -1698,9 +1660,7 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
     return (
       <BottomSheetProvider value={externalContextVariables}>
         <BottomSheetInternalProvider value={internalContextVariables}>
-          <BottomSheetGestureHandlersProvider
-            gestureEventsHandlersHook={gestureEventsHandlersHook}
-          >
+          <BottomSheetGestureHandlersProvider>
             <BottomSheetBackdropContainer
               key="BottomSheetBackdropContainer"
               animatedIndex={animatedIndex}
@@ -1764,7 +1724,6 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
                   // bottomInset,
                   animatedSheetState,
                   // animatedScrollableState,
-                  // animatedScrollableOverrideState,
                   // isScrollableRefreshable,
                   // animatedScrollableContentOffsetY,
                   // keyboardState,

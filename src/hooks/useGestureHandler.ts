@@ -14,11 +14,21 @@ export const useGestureHandler: GestureHandlersHookType = (
   source: GESTURE_SOURCE,
   state: Animated.SharedValue<State>,
   gestureSource: Animated.SharedValue<GESTURE_SOURCE>,
+  onBegin: GestureEventHandlerCallbackType,
   onStart: GestureEventHandlerCallbackType,
   onChange: GestureEventHandlerCallbackType,
+  onUpdate: GestureEventHandlerCallbackType,
   onEnd: GestureEventHandlerCallbackType,
   onFinalize: GestureEventHandlerCallbackType
 ) => {
+  const handleOnBegin = useWorkletCallback(
+    (event: GestureStateChangeEvent<PanGestureHandlerEventPayload>) => {
+      onBegin(source, event);
+      return;
+    },
+    [source, onBegin]
+  );
+
   const handleOnStart = useWorkletCallback(
     (event: GestureStateChangeEvent<PanGestureHandlerEventPayload>) => {
       state.value = State.BEGAN;
@@ -40,6 +50,13 @@ export const useGestureHandler: GestureHandlersHookType = (
       onChange(source, event);
     },
     [state, gestureSource, source, onChange]
+  );
+
+  const handleOnUpdate = useWorkletCallback(
+    (event: GestureStateChangeEvent<PanGestureHandlerEventPayload>) => {
+      onUpdate(source, event);
+    },
+    [source, onUpdate]
   );
 
   const handleOnEnd = useWorkletCallback(
@@ -71,8 +88,10 @@ export const useGestureHandler: GestureHandlersHookType = (
   );
 
   return {
+    handleOnBegin,
     handleOnStart,
     handleOnChange,
+    handleOnUpdate,
     handleOnEnd,
     handleOnFinalize,
   };

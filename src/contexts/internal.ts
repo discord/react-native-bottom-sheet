@@ -1,6 +1,7 @@
-import { createContext, RefObject } from 'react';
+import { createContext } from 'react';
 import type { State } from 'react-native-gesture-handler';
 import type Animated from 'react-native-reanimated';
+import type { AnimatedRef } from 'react-native-reanimated';
 import type {
   AnimateToPositionType,
   BottomSheetGestureProps,
@@ -9,11 +10,10 @@ import type {
 import type {
   ANIMATION_STATE,
   KEYBOARD_STATE,
-  SCROLLABLE_STATE,
   SCROLLABLE_TYPE,
   SHEET_STATE,
 } from '../constants';
-import type { Scrollable, ScrollableRef } from '../types';
+import type { Scrollable } from '../types';
 
 export interface BottomSheetInternalContextType
   extends Partial<BottomSheetGestureProps>,
@@ -30,10 +30,12 @@ export interface BottomSheetInternalContextType
   // animated states
   animatedAnimationState: Animated.SharedValue<ANIMATION_STATE>;
   animatedSheetState: Animated.SharedValue<SHEET_STATE>;
-  animatedScrollableState: Animated.SharedValue<SCROLLABLE_STATE>;
   animatedKeyboardState: Animated.SharedValue<KEYBOARD_STATE>;
   animatedContentGestureState: Animated.SharedValue<State>;
   animatedHandleGestureState: Animated.SharedValue<State>;
+  isPanGestureMoving: Animated.SharedValue<boolean>;
+  isScrollHandled: Animated.SharedValue<boolean>;
+  isScrollEnabled: Animated.SharedValue<boolean>;
 
   // animated values
   animatedSnapPoints: Animated.SharedValue<number[]>;
@@ -49,10 +51,9 @@ export interface BottomSheetInternalContextType
   animatedKeyboardHeightInContainer: Animated.SharedValue<number>;
   animatedScrollableType: Animated.SharedValue<SCROLLABLE_TYPE>;
   animatedScrollableContentOffsetY: Animated.SharedValue<number>;
-  animatedScrollableOverrideState: Animated.SharedValue<SCROLLABLE_STATE>;
-  isScrollableLocked: Animated.SharedValue<boolean>;
+  panGestureMovedY: Animated.SharedValue<number>;
   isScrollableRefreshable: Animated.SharedValue<boolean>;
-  isScrollEnded: Animated.SharedValue<boolean>;
+  isExpanded: Animated.SharedValue<boolean>;
   isContentHeightFixed: Animated.SharedValue<boolean>;
   isInTemporaryPosition: Animated.SharedValue<boolean>;
   shouldHandleKeyboardEvents: Animated.SharedValue<boolean>;
@@ -60,8 +61,9 @@ export interface BottomSheetInternalContextType
   // methods
   stopAnimation: () => void;
   animateToPosition: AnimateToPositionType;
-  setScrollableRef: (ref: ScrollableRef) => void;
-  removeScrollableRef: (ref: RefObject<Scrollable>) => void;
+
+  // refs
+  animatedScrollableRef: AnimatedRef<Scrollable>;
 }
 
 export const BottomSheetInternalContext =

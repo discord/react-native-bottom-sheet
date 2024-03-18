@@ -7,7 +7,6 @@ import {
 } from 'react-native-gesture-handler';
 import Animated, { useAnimatedProps } from 'react-native-reanimated';
 import { BottomSheetDraggableContext } from '../../contexts/gesture';
-import { SCROLLABLE_STATE } from '../../constants';
 import { useBottomSheetInternal } from '../../hooks';
 
 const AnimatedRefreshControl = Animated.createAnimatedComponent(RefreshControl);
@@ -23,12 +22,12 @@ function BottomSheetRefreshControlComponent({
 }: BottomSheetRefreshControlProps) {
   //#region hooks
   const draggableGesture = useContext(BottomSheetDraggableContext);
-  const { animatedScrollableState } = useBottomSheetInternal();
+  const { isExpanded } = useBottomSheetInternal();
   //#endregion
 
   //#region variables
   const animatedProps = useAnimatedProps(() => ({
-    enabled: animatedScrollableState.value === SCROLLABLE_STATE.UNLOCKED,
+    enabled: isExpanded.value,
   }));
   const gesture = useMemo(
     () =>
