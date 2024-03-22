@@ -112,13 +112,6 @@ export const screens = [
         slug: 'Advanced/PullToRefreshExample',
         getScreen: () => require('./advanced/PullToRefreshExample').default,
       },
-      {
-        name: 'Custom Gesture Handling',
-        slug: 'Advanced/CustomGestureHandling',
-        getScreen: () =>
-          require('./advanced/customGestureHandling/CustomGestureHandling')
-            .default,
-      },
     ] as ShowcaseExampleScreenType[],
   },
 ];

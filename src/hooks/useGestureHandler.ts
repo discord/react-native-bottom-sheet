@@ -1,96 +1,98 @@
-import Animated, { useAnimatedGestureHandler } from 'react-native-reanimated';
+import Animated, { useWorkletCallback } from 'react-native-reanimated';
 import {
   State,
-  PanGestureHandlerGestureEvent,
+  GestureStateChangeEvent,
+  PanGestureHandlerEventPayload,
 } from 'react-native-gesture-handler';
 import { GESTURE_SOURCE } from '../constants';
 import type {
-  GestureEventContextType,
   GestureEventHandlerCallbackType,
+  GestureHandlersHookType,
 } from '../types';
 
-const resetContext = (context: any) => {
-  'worklet';
-
-  Object.keys(context).map(key => {
-    context[key] = undefined;
-  });
-};
-
-export const useGestureHandler = (
-  type: GESTURE_SOURCE,
+export const useGestureHandler: GestureHandlersHookType = (
+  source: GESTURE_SOURCE,
   state: Animated.SharedValue<State>,
   gestureSource: Animated.SharedValue<GESTURE_SOURCE>,
-  handleOnStart: GestureEventHandlerCallbackType,
-  handleOnActive: GestureEventHandlerCallbackType,
-  handleOnEnd: GestureEventHandlerCallbackType
-): ((event: PanGestureHandlerGestureEvent) => void) => {
-  const gestureHandler = useAnimatedGestureHandler<
-    PanGestureHandlerGestureEvent,
-    GestureEventContextType
-  >(
-    {
-      onActive: (payload, context) => {
-        if (!context.didStart) {
-          context.didStart = true;
-
-          state.value = State.BEGAN;
-          gestureSource.value = type;
-
-          handleOnStart(type, payload, context);
-          return;
-        }
-
-        if (gestureSource.value !== type) {
-          return;
-        }
-
-        state.value = payload.state;
-        handleOnActive(type, payload, context);
-      },
-      onEnd: (payload, context) => {
-        if (gestureSource.value !== type) {
-          return;
-        }
-
-        state.value = payload.state;
-        gestureSource.value = GESTURE_SOURCE.UNDETERMINED;
-
-        handleOnEnd(type, payload, context);
-        resetContext(context);
-      },
-      onCancel: (payload, context) => {
-        if (gestureSource.value !== type) {
-          return;
-        }
-
-        state.value = payload.state;
-        gestureSource.value = GESTURE_SOURCE.UNDETERMINED;
-
-        resetContext(context);
-      },
-      onFail: (payload, context) => {
-        if (gestureSource.value !== type) {
-          return;
-        }
-
-        state.value = payload.state;
-        gestureSource.value = GESTURE_SOURCE.UNDETERMINED;
-
-        resetContext(context);
-      },
-      onFinish: (payload, context) => {
-        if (gestureSource.value !== type) {
-          return;
-        }
-
-        state.value = payload.state;
-        gestureSource.value = GESTURE_SOURCE.UNDETERMINED;
-
-        resetContext(context);
-      },
+  onBegin: GestureEventHandlerCallbackType,
+  onStart: GestureEventHandlerCallbackType,
+  onChange: GestureEventHandlerCallbackType,
+  onUpdate: GestureEventHandlerCallbackType,
+  onEnd: GestureEventHandlerCallbackType,
+  onFinalize: GestureEventHandlerCallbackType
+) => {
+  const handleOnBegin = useWorkletCallback(
+    (event: GestureStateChangeEvent<PanGestureHandlerEventPayload>) => {
+      onBegin(source, event);
+      return;
     },
-    [type, state, handleOnStart, handleOnActive, handleOnEnd]
+    [source, onBegin]
   );
-  return gestureHandler;
+
+  const handleOnStart = useWorkletCallback(
+    (event: GestureStateChangeEvent<PanGestureHandlerEventPayload>) => {
+      state.value = State.BEGAN;
+      gestureSource.value = source;
+
+      onStart(source, event);
+      return;
+    },
+    [state, gestureSource, source, onStart]
+  );
+
+  const handleOnChange = useWorkletCallback(
+    (event: GestureStateChangeEvent<PanGestureHandlerEventPayload>) => {
+      if (gestureSource.value !== source) {
+        return;
+      }
+
+      state.value = event.state;
+      onChange(source, event);
+    },
+    [state, gestureSource, source, onChange]
+  );
+
+  const handleOnUpdate = useWorkletCallback(
+    (event: GestureStateChangeEvent<PanGestureHandlerEventPayload>) => {
+      onUpdate(source, event);
+    },
+    [source, onUpdate]
+  );
+
+  const handleOnEnd = useWorkletCallback(
+    (event: GestureStateChangeEvent<PanGestureHandlerEventPayload>) => {
+      if (gestureSource.value !== source) {
+        return;
+      }
+
+      state.value = event.state;
+      gestureSource.value = GESTURE_SOURCE.UNDETERMINED;
+
+      onEnd(source, event);
+    },
+    [state, gestureSource, source, onEnd]
+  );
+
+  const handleOnFinalize = useWorkletCallback(
+    (event: GestureStateChangeEvent<PanGestureHandlerEventPayload>) => {
+      if (gestureSource.value !== source) {
+        return;
+      }
+
+      state.value = event.state;
+      gestureSource.value = GESTURE_SOURCE.UNDETERMINED;
+
+      onFinalize(source, event);
+    },
+    [state, gestureSource, source, onFinalize]
+  );
+
+  return {
+    handleOnBegin,
+    handleOnStart,
+    handleOnChange,
+    handleOnUpdate,
+    handleOnEnd,
+    handleOnFinalize,
+  };
 };
