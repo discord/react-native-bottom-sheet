@@ -1,7 +1,7 @@
-import { useMemo } from 'react';
 import invariant from 'invariant';
-import { INITIAL_SNAP_POINT } from '../components/bottomSheet/constants';
+import { useMemo } from 'react';
 import type { BottomSheetProps } from '../components/bottomSheet';
+import { INITIAL_SNAP_POINT } from '../components/bottomSheet/constants';
 
 /**
  * @todo
@@ -14,7 +14,10 @@ export const usePropsValidator = ({
   enableDynamicSizing,
   topInset,
   bottomInset,
-}: BottomSheetProps) => {
+}: Pick<
+  BottomSheetProps,
+  'index' | 'snapPoints' | 'enableDynamicSizing' | 'topInset' | 'bottomInset'
+>) => {
   useMemo(() => {
     //#region snap points
     const _snapPoints = snapPoints
@@ -31,7 +34,7 @@ export const usePropsValidator = ({
       const _snapPoint =
         typeof snapPoint === 'number'
           ? snapPoint
-          : parseInt(snapPoint.replace('%', ''), 10);
+          : Number.parseInt(snapPoint.replace('%', ''), 10);
 
       invariant(
         _snapPoint > 0 || _snapPoint === INITIAL_SNAP_POINT,

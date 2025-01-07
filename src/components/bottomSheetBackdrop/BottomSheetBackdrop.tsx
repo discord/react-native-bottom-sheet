@@ -6,25 +6,25 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { ViewProps } from 'react-native';
+import type { ViewProps } from 'react-native';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   interpolate,
-  Extrapolate,
   useAnimatedStyle,
   useAnimatedReaction,
-  useAnimatedGestureHandler,
   runOnJS,
+  Extrapolation,
 } from 'react-native-reanimated';
-import {
-  TapGestureHandler,
-  TapGestureHandlerGestureEvent,
-} from 'react-native-gesture-handler';
 import { useBottomSheet } from '../../hooks';
 import {
-  DEFAULT_OPACITY,
+  DEFAULT_ACCESSIBILITY_HINT,
+  DEFAULT_ACCESSIBILITY_LABEL,
+  DEFAULT_ACCESSIBILITY_ROLE,
+  DEFAULT_ACCESSIBLE,
   DEFAULT_APPEARS_ON_INDEX,
   DEFAULT_DISAPPEARS_ON_INDEX,
   DEFAULT_ENABLE_TOUCH_THROUGH,
+  DEFAULT_OPACITY,
   DEFAULT_PRESS_BEHAVIOR,
   DEFAULT_ACCESSIBLE,
   DEFAULT_ACCESSIBILITY_ROLE,
@@ -91,27 +91,27 @@ const BottomSheetBackdropComponent = ({
   //#endregion
 
   //#region tap gesture
-  const gestureHandler =
-    useAnimatedGestureHandler<TapGestureHandlerGestureEvent>(
-      {
-        onFinish: () => {
-          runOnJS(handleOnPress)();
-        },
-      },
-      [handleOnPress]
-    );
+  const tapHandler = useMemo(() => {
+    const gesture = Gesture.Tap().onEnd(() => {
+      runOnJS(handleOnPress)();
+    });
+    return gesture;
+  }, [handleOnPress]);
   //#endregion
 
   //#region styles
-  const containerAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: interpolate(
-      animatedIndex.value,
-      [-1, disappearsOnIndex, appearsOnIndex],
-      [0, 0, opacity],
-      Extrapolate.CLAMP
-    ),
-    flex: 1,
-  }));
+  const containerAnimatedStyle = useAnimatedStyle(
+    () => ({
+      opacity: interpolate(
+        animatedIndex.value,
+        [-1, disappearsOnIndex, appearsOnIndex],
+        [0, 0, opacity],
+        Extrapolation.CLAMP
+      ),
+      flex: 1,
+    }),
+    [animatedIndex, appearsOnIndex, disappearsOnIndex, opacity]
+  );
   const containerStyle = useMemo(
     () => [styles.container, style, containerAnimatedStyle],
     [style, containerAnimatedStyle]
@@ -160,9 +160,7 @@ const BottomSheetBackdropComponent = ({
   );
 
   return pressBehavior !== 'none' ? (
-    <TapGestureHandler onGestureEvent={gestureHandler}>
-      {AnimatedView}
-    </TapGestureHandler>
+    <GestureDetector gesture={tapHandler}>{AnimatedView}</GestureDetector>
   ) : (
     AnimatedView
   );

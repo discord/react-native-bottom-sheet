@@ -1,40 +1,32 @@
 import type React from 'react';
-import type { ViewStyle, Insets, StyleProp } from 'react-native';
+import type { Insets, StyleProp, ViewStyle } from 'react-native';
+import type { PanGesture } from 'react-native-gesture-handler';
 import type {
-  SharedValue,
   AnimateStyle,
+  ReduceMotion,
+  SharedValue,
   WithSpringConfig,
   WithTimingConfig,
 } from 'react-native-reanimated';
-import type { PanGestureHandlerProps } from 'react-native-gesture-handler';
-import type { BottomSheetHandleProps } from '../bottomSheetHandle';
-import type { BottomSheetBackdropProps } from '../bottomSheetBackdrop';
-import type { BottomSheetBackgroundProps } from '../bottomSheetBackground';
-import type { BottomSheetFooterProps } from '../bottomSheetFooter';
 import type {
   ANIMATION_SOURCE,
   KEYBOARD_BEHAVIOR,
   KEYBOARD_BLUR_BEHAVIOR,
   KEYBOARD_INPUT_MODE,
+  SNAP_POINT_TYPE,
 } from '../../constants';
 import type {
   GestureEventsHandlersHookType,
   NullableAccessibilityProps,
 } from '../../types';
+import type { BottomSheetBackdropProps } from '../bottomSheetBackdrop';
+import type { BottomSheetBackgroundProps } from '../bottomSheetBackground';
+import type { BottomSheetFooterProps } from '../bottomSheetFooter';
+import type { BottomSheetHandleProps } from '../bottomSheetHandle';
 
 export interface BottomSheetProps
   extends BottomSheetAnimationConfigs,
-    Partial<
-      Pick<
-        PanGestureHandlerProps,
-        | 'activeOffsetY'
-        | 'activeOffsetX'
-        | 'failOffsetY'
-        | 'failOffsetX'
-        | 'waitFor'
-        | 'simultaneousHandlers'
-      >
-    >,
+    Partial<BottomSheetGestureProps>,
     Omit<NullableAccessibilityProps, 'accessibilityHint'> {
   //#region configuration
   /**
@@ -54,10 +46,7 @@ export interface BottomSheetProps
    * snapPoints={['%100']}
    * @type Array<string | number>
    */
-  snapPoints?:
-    | Array<string | number>
-    | SharedValue<Array<string | number>>
-    | Readonly<(string | number)[] | SharedValue<(string | number)[]>>;
+  snapPoints?: Array<string | number> | SharedValue<Array<string | number>>;
   /**
    * Defines how violently sheet has to be stopped while over dragging.
    * @type number
@@ -95,10 +84,9 @@ export interface BottomSheetProps
    */
   enablePanDownToClose?: boolean;
   /**
-   * Enable dynamic sizing for content view and scrollable
-   * content size.
+   * Enable dynamic sizing for content view and scrollable content size.
    * @type boolean
-   * @default false
+   * @default true
    */
   enableDynamicSizing?: boolean;
   /**
@@ -107,16 +95,19 @@ export interface BottomSheetProps
    * @default true
    */
   animateOnMount?: boolean;
+  /**
+   * To override the user reduce motion setting.
+   * - `ReduceMotion.System`: if the `Reduce motion` accessibility setting is enabled on the device, disable the animation.
+   * - `ReduceMotion.Always`: disable the animation, even if `Reduce motion` accessibility setting is not enabled.
+   * - `ReduceMotion.Never`: enable the animation, even if `Reduce motion` accessibility setting is enabled.
+   * @type ReduceMotion
+   * @see https://docs.swmansion.com/react-native-reanimated/docs/guides/accessibility
+   * @default ReduceMotion.System
+   */
+  overrideReduceMotion?: ReduceMotion;
   //#endregion
 
   //#region layout
-  /**
-   * Handle height helps to calculate the internal container and sheet layouts,
-   * if `handleComponent` is provided, the library internally will calculate its layout,
-   * unless `handleHeight` is provided.
-   * @type number
-   */
-  handleHeight?: number | SharedValue<number>;
   /**
    * Container height helps to calculate the internal sheet layouts,
    * if `containerHeight` not provided, the library internally will calculate it,
@@ -124,11 +115,6 @@ export interface BottomSheetProps
    * @type number | SharedValue<number>;
    */
   containerHeight?: number | SharedValue<number>;
-  /**
-   * Content height helps dynamic snap points calculation.
-   * @type number | SharedValue<number>;
-   */
-  contentHeight?: number | SharedValue<number>;
   /**
    * Container offset helps to accurately detect container offsets.
    * @type SharedValue<number>;
@@ -263,7 +249,7 @@ export interface BottomSheetProps
    *
    * @type (index: number) => void;
    */
-  onChange?: (index: number) => void;
+  onChange?: (index: number, position: number, type: SNAP_POINT_TYPE) => void;
   /**
    * Callback when the sheet close.
    *
@@ -306,9 +292,9 @@ export interface BottomSheetProps
   footerComponent?: React.FC<BottomSheetFooterProps>;
   /**
    * A scrollable node or normal view.
-   * @type (() => React.ReactElement) | React.ReactNode[] | React.ReactNode
+   * @type React.ReactNode
    */
-  children: (() => React.ReactElement) | React.ReactNode[] | React.ReactNode;
+  children: React.ReactNode;
   //#endregion
 
   //#region private
@@ -336,3 +322,16 @@ export type AnimateToPositionType = (
   velocity?: number,
   configs?: WithTimingConfig | WithSpringConfig
 ) => void;
+
+export type BottomSheetGestureProps = {
+  activeOffsetX: Parameters<PanGesture['activeOffsetX']>[0];
+  activeOffsetY: Parameters<PanGesture['activeOffsetY']>[0];
+
+  failOffsetY: Parameters<PanGesture['failOffsetY']>[0];
+  failOffsetX: Parameters<PanGesture['failOffsetX']>[0];
+
+  simultaneousHandlers: Parameters<
+    PanGesture['simultaneousWithExternalGesture']
+  >[0];
+  waitFor: Parameters<PanGesture['requireExternalGestureToFail']>[0];
+};

@@ -1,15 +1,19 @@
 import type React from 'react';
 import type {
+  AccessibilityProps,
   FlatList,
-  ScrollView,
-  SectionList,
   NativeScrollEvent,
   NativeSyntheticEvent,
-  AccessibilityProps,
+  ScrollView,
+  SectionList,
 } from 'react-native';
 import type {
   GestureEventPayload,
+  GestureStateChangeEvent,
+  GestureUpdateEvent,
+  PanGestureChangeEventPayload,
   PanGestureHandlerEventPayload,
+  State,
 } from 'react-native-gesture-handler';
 import type {
   SharedValue,
@@ -77,12 +81,14 @@ export interface BottomSheetMethods {
    */
   forceClose: (animationConfigs?: WithSpringConfig | WithTimingConfig) => void;
 }
-export interface BottomSheetModalMethods extends BottomSheetMethods {
+
+// biome-ignore lint/suspicious/noExplicitAny: Using 'any' allows users to define their own strict types for 'data' property.
+export interface BottomSheetModalMethods<T = any> extends BottomSheetMethods {
   /**
    * Mount and present the bottom sheet modal to the initial snap point.
    * @param data to be passed to the modal.
    */
-  present: (data?: any) => void;
+  present: (data?: T) => void;
   /**
    * Close and unmount the bottom sheet modal.
    * @param animationConfigs snap animation configs.
@@ -120,12 +126,6 @@ export type ScrollableEvent = (
 
 //#region utils
 export type Primitive = string | number | boolean;
-export interface Insets {
-  top: number;
-  bottom: number;
-  left: number;
-  right: number;
-}
 //#endregion
 
 //#region hooks
@@ -136,19 +136,44 @@ export type GestureEventContextType = {
   didStart?: boolean;
 };
 
-export type GestureEventHandlerCallbackType<C = any> = (
+export type GestureEventHandlerCallbackType = (
   source: GESTURE_SOURCE,
-  payload: GestureEventPayloadType,
-  context: C
+  payload: GestureEventPayloadType
 ) => void;
 
 export type GestureEventsHandlersHookType = () => {
   handleOnStart: GestureEventHandlerCallbackType;
-  handleOnActive: GestureEventHandlerCallbackType;
+  handleOnChange: GestureEventHandlerCallbackType;
   handleOnEnd: GestureEventHandlerCallbackType;
+  handleOnFinalize: GestureEventHandlerCallbackType;
 };
 
-type ScrollEventHandlerCallbackType<C = any> = (
+export type GestureHandlersHookType = (
+  source: GESTURE_SOURCE,
+  state: SharedValue<State>,
+  gestureSource: SharedValue<GESTURE_SOURCE>,
+  onStart: GestureEventHandlerCallbackType,
+  onChange: GestureEventHandlerCallbackType,
+  onEnd: GestureEventHandlerCallbackType,
+  onFinalize: GestureEventHandlerCallbackType
+) => {
+  handleOnStart: (
+    event: GestureStateChangeEvent<PanGestureHandlerEventPayload>
+  ) => void;
+  handleOnChange: (
+    event: GestureUpdateEvent<
+      PanGestureHandlerEventPayload & PanGestureChangeEventPayload
+    >
+  ) => void;
+  handleOnEnd: (
+    event: GestureStateChangeEvent<PanGestureHandlerEventPayload>
+  ) => void;
+  handleOnFinalize: (
+    event: GestureStateChangeEvent<PanGestureHandlerEventPayload>
+  ) => void;
+};
+
+type ScrollEventHandlerCallbackType<C = never> = (
   payload: NativeScrollEvent,
   context: C
 ) => void;

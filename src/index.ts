@@ -12,7 +12,6 @@ export { useBottomSheetSpringConfigs } from './hooks/useBottomSheetSpringConfigs
 export { useBottomSheetTimingConfigs } from './hooks/useBottomSheetTimingConfigs';
 export { useBottomSheetInternal } from './hooks/useBottomSheetInternal';
 export { useBottomSheetModalInternal } from './hooks/useBottomSheetModalInternal';
-export { useBottomSheetDynamicSnapPoints } from './hooks/useBottomSheetDynamicSnapPoints';
 export { useScrollEventsHandlersDefault } from './hooks/useScrollEventsHandlersDefault';
 export { useGestureEventsHandlersDefault } from './hooks/useGestureEventsHandlersDefault';
 export { useBottomSheetGestureHandlers } from './hooks/useBottomSheetGestureHandlers';
@@ -26,6 +25,7 @@ export {
   BottomSheetSectionList,
   BottomSheetFlatList,
   BottomSheetVirtualizedList,
+  BottomSheetFlashList,
 } from './components/bottomSheetScrollable';
 export { default as BottomSheetHandle } from './components/bottomSheetHandle';
 export { default as BottomSheetDraggableView } from './components/bottomSheetDraggableView';

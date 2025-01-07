@@ -1,20 +1,22 @@
 import React, { memo, useCallback, useMemo } from 'react';
 import type { LayoutChangeEvent } from 'react-native';
-import { PanGestureHandler } from 'react-native-gesture-handler';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated from 'react-native-reanimated';
-import BottomSheetHandle from '../bottomSheetHandle';
 import {
   useBottomSheetGestureHandlers,
   useBottomSheetInternal,
 } from '../../hooks';
 import { print } from '../../utilities';
+import { DEFAULT_ENABLE_HANDLE_PANNING_GESTURE } from '../bottomSheet/constants';
+import BottomSheetHandle from '../bottomSheetHandle';
+import { styles } from './styles';
 import type { BottomSheetHandleContainerProps } from './types';
 
 function BottomSheetHandleContainerComponent({
   animatedIndex,
   animatedPosition,
   simultaneousHandlers: _internalSimultaneousHandlers,
-  enableHandlePanningGesture,
+  enableHandlePanningGesture = DEFAULT_ENABLE_HANDLE_PANNING_GESTURE,
   handleHeight,
   handleComponent: _providedHandleComponent,
   handleStyle: _providedHandleStyle,
@@ -33,7 +35,7 @@ function BottomSheetHandleContainerComponent({
   //#endregion
 
   //#region variables
-  const simultaneousHandlers = useMemo<any>(() => {
+  const simultaneousHandlers = useMemo<unknown[]>(() => {
     const refs = [];
 
     if (_internalSimultaneousHandlers) {
@@ -50,6 +52,57 @@ function BottomSheetHandleContainerComponent({
 
     return refs;
   }, [_providedSimultaneousHandlers, _internalSimultaneousHandlers]);
+
+  const panGesture = useMemo(() => {
+    let gesture = Gesture.Pan()
+      .enabled(enableHandlePanningGesture)
+      .shouldCancelWhenOutside(false)
+      .runOnJS(false)
+      .onStart(handlePanGestureHandler.handleOnStart)
+      .onChange(handlePanGestureHandler.handleOnChange)
+      .onEnd(handlePanGestureHandler.handleOnEnd)
+      .onFinalize(handlePanGestureHandler.handleOnFinalize);
+
+    if (waitFor) {
+      gesture = gesture.requireExternalGestureToFail(waitFor);
+    }
+
+    if (simultaneousHandlers) {
+      gesture = gesture.simultaneousWithExternalGesture(
+        simultaneousHandlers as never
+      );
+    }
+
+    if (activeOffsetX) {
+      gesture = gesture.activeOffsetX(activeOffsetX);
+    }
+
+    if (activeOffsetY) {
+      gesture = gesture.activeOffsetY(activeOffsetY);
+    }
+
+    if (failOffsetX) {
+      gesture = gesture.failOffsetX(failOffsetX);
+    }
+
+    if (failOffsetY) {
+      gesture = gesture.failOffsetY(failOffsetY);
+    }
+
+    return gesture;
+  }, [
+    activeOffsetX,
+    activeOffsetY,
+    enableHandlePanningGesture,
+    failOffsetX,
+    failOffsetY,
+    simultaneousHandlers,
+    waitFor,
+    handlePanGestureHandler.handleOnChange,
+    handlePanGestureHandler.handleOnEnd,
+    handlePanGestureHandler.handleOnFinalize,
+    handlePanGestureHandler.handleOnStart,
+  ]);
   //#endregion
 
   //#region callbacks
@@ -61,13 +114,16 @@ function BottomSheetHandleContainerComponent({
     }: LayoutChangeEvent) {
       handleHeight.value = height;
 
-      print({
-        component: BottomSheetHandleContainer.displayName,
-        method: 'handleContainerLayout',
-        params: {
-          height,
-        },
-      });
+      if (__DEV__) {
+        print({
+          component: BottomSheetHandleContainer.displayName,
+          method: 'handleContainerLayout',
+          category: 'layout',
+          params: {
+            height,
+          },
+        });
+      }
     },
     [handleHeight]
   );
@@ -79,20 +135,11 @@ function BottomSheetHandleContainerComponent({
       ? BottomSheetHandle
       : _providedHandleComponent;
   return HandleComponent !== null ? (
-    <PanGestureHandler
-      enabled={enableHandlePanningGesture}
-      waitFor={waitFor}
-      simultaneousHandlers={simultaneousHandlers}
-      shouldCancelWhenOutside={false}
-      activeOffsetX={activeOffsetX}
-      activeOffsetY={activeOffsetY}
-      failOffsetX={failOffsetX}
-      failOffsetY={failOffsetY}
-      onGestureEvent={handlePanGestureHandler}
-    >
+    <GestureDetector gesture={panGesture}>
       <Animated.View
         key="BottomSheetHandleContainer"
         onLayout={handleContainerLayout}
+        style={styles.container}
       >
         <HandleComponent
           animatedIndex={animatedIndex}
@@ -101,7 +148,7 @@ function BottomSheetHandleContainerComponent({
           indicatorStyle={_providedIndicatorStyle}
         />
       </Animated.View>
-    </PanGestureHandler>
+    </GestureDetector>
   ) : null;
   //#endregion
 }

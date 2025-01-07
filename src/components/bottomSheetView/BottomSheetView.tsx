@@ -1,8 +1,13 @@
 import React, { memo, useEffect, useCallback, useMemo } from 'react';
-import { LayoutChangeEvent, StyleSheet } from 'react-native';
+import {
+  type LayoutChangeEvent,
+  StyleSheet,
+  type ViewStyle,
+} from 'react-native';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { SCROLLABLE_TYPE } from '../../constants';
 import { useBottomSheetInternal } from '../../hooks';
+import { print } from '../../utilities';
 import type { BottomSheetViewProps } from './types';
 import { print } from '../../utilities';
 
@@ -25,26 +30,25 @@ function BottomSheetViewComponent({
   //#endregion
 
   //#region styles
-  const containerStylePaddingBottom = useMemo(() => {
-    const flattenStyle = StyleSheet.flatten(style);
-    const paddingBottom =
-      flattenStyle && 'paddingBottom' in flattenStyle
-        ? flattenStyle.paddingBottom
+  const flattenStyle = useMemo<ViewStyle | undefined>(
+    () => StyleSheet.flatten(style),
+    [style]
+  );
+  const containerStyle = useAnimatedStyle(() => {
+    if (!enableFooterMarginAdjustment) {
+      return flattenStyle ?? {};
+    }
+
+    const marginBottom =
+      typeof flattenStyle?.marginBottom === 'number'
+        ? flattenStyle.marginBottom
         : 0;
-    return typeof paddingBottom === 'number' ? paddingBottom : 0;
-  }, [style]);
-  const containerAnimatedStyle = useAnimatedStyle(
-    () => ({
-      paddingBottom: enableFooterMarginAdjustment
-        ? animatedFooterHeight.value + containerStylePaddingBottom
-        : containerStylePaddingBottom,
-    }),
-    [containerStylePaddingBottom, enableFooterMarginAdjustment]
-  );
-  const containerStyle = useMemo(
-    () => [style, containerAnimatedStyle],
-    [style, containerAnimatedStyle]
-  );
+
+    return {
+      ...(flattenStyle ?? {}),
+      marginBottom: marginBottom + animatedFooterHeight.value,
+    };
+  }, [flattenStyle, enableFooterMarginAdjustment, animatedFooterHeight]);
   //#endregion
 
   //#region callbacks
@@ -62,13 +66,16 @@ function BottomSheetViewComponent({
         onLayout(event);
       }
 
-      print({
-        component: BottomSheetView.displayName,
-        method: 'handleLayout',
-        params: {
-          height: event.nativeEvent.layout.height,
-        },
-      });
+      if (__DEV__) {
+        print({
+          component: BottomSheetView.displayName,
+          method: 'handleLayout',
+          category: 'layout',
+          params: {
+            height: event.nativeEvent.layout.height,
+          },
+        });
+      }
     },
     [onLayout, animatedContentHeight, enableDynamicSizing]
   );
@@ -79,7 +86,7 @@ function BottomSheetViewComponent({
 
   //render
   return (
-    <Animated.View onLayout={handleLayout} style={containerStyle} {...rest}>
+    <Animated.View {...rest} onLayout={handleLayout} style={containerStyle}>
       {children}
     </Animated.View>
   );
