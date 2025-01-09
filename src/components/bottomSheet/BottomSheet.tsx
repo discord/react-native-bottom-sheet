@@ -134,6 +134,8 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
       topInset = 0,
       bottomInset = 0,
       maxDynamicContentSize,
+      contentHeight: _providedContentHeight,
+      handleHeight: _providedHandleHeight,
 
       // animated callback shared values
       animatedPosition: _providedAnimatedPosition,
@@ -208,10 +210,10 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
       _providedContainerOffset ?? INITIAL_CONTAINER_OFFSET
     ) as SharedValue<Required<Insets>>;
     const animatedHandleHeight = useReactiveSharedValue<number>(
-      INITIAL_HANDLE_HEIGHT
+      _providedHandleHeight ?? INITIAL_HANDLE_HEIGHT
     );
     const animatedFooterHeight = useSharedValue(0);
-    const animatedContentHeight = useSharedValue(INITIAL_CONTAINER_HEIGHT);
+    const animatedContentHeight = useSharedValue(_providedContentHeight ?? INITIAL_CONTAINER_HEIGHT);
     const [animatedSnapPoints, animatedDynamicSnapPointIndex] =
       useAnimatedSnapPoints(
         _providedSnapPoints,
