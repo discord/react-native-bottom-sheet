@@ -1,12 +1,11 @@
 // @ts-ignore
 import type { FlashListProps } from '@shopify/flash-list';
-import React, { forwardRef, memo, type Ref, useMemo } from 'react';
+import React, { forwardRef, memo, useMemo } from 'react';
 import { type ScrollViewProps, StyleSheet } from 'react-native';
-import type Animated from 'react-native-reanimated';
 import BottomSheetScrollView from './BottomSheetScrollView';
 import type {
+  BottomSheetFlashListProps,
   BottomSheetScrollViewMethods,
-  BottomSheetScrollableProps,
 } from './types';
 
 let FlashList: {
@@ -17,14 +16,6 @@ let FlashList: {
 try {
   FlashList = require('@shopify/flash-list') as never;
 } catch (_) {}
-
-export type BottomSheetFlashListProps<T> = Omit<
-  Animated.AnimateProps<FlashListProps<T>>,
-  'decelerationRate' | 'scrollEventThrottle'
-> &
-  BottomSheetScrollableProps & {
-    ref?: Ref<React.FC>;
-  };
 
 const BottomSheetFlashListComponent = forwardRef<
   React.FC,
