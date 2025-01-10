@@ -20,7 +20,7 @@ try {
 
 export type BottomSheetFlashListProps<T> = Omit<
   Animated.AnimateProps<FlashListProps<T>>,
-  'decelerationRate' | 'onScroll' | 'scrollEventThrottle'
+  'decelerationRate' | 'scrollEventThrottle'
 > &
   BottomSheetScrollableProps & {
     ref?: Ref<React.FC>;
