@@ -6,7 +6,7 @@ type Callback = (...args: any[]) => any;
  * https://gist.github.com/JakeCoxon/c7ebf6e6496f8468226fd36b596e1985
  */
 export const useStableCallback = (callback: Callback) => {
-  const callbackRef = useRef<Callback>();
+  const callbackRef = useRef<Callback | undefined>(undefined);
   const memoCallback = useCallback(
     (...args: any) => callbackRef.current && callbackRef.current(...args),
     []
