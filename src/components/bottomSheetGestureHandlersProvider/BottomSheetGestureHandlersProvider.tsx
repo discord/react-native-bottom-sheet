@@ -3,15 +3,13 @@ import { GESTURE_SOURCE } from '../../constants';
 import {
   useGestureHandler,
   useBottomSheetInternal,
-  useGestureEventsHandlersDefault,
+  useGestureEventsHandlers,
 } from '../../hooks';
 import { BottomSheetGestureHandlersContext } from '../../contexts';
 import type { BottomSheetGestureHandlersProviderProps } from './types';
 import { useSharedValue } from 'react-native-reanimated';
 
 const BottomSheetGestureHandlersProvider = ({
-  gestureEventsHandlersHook:
-    useGestureEventsHandlers = useGestureEventsHandlersDefault,
   children,
 }: BottomSheetGestureHandlersProviderProps) => {
   //#region variables
@@ -23,8 +21,14 @@ const BottomSheetGestureHandlersProvider = ({
   //#region hooks
   const { animatedContentGestureState, animatedHandleGestureState } =
     useBottomSheetInternal();
-  const { handleOnStart, handleOnActive, handleOnEnd } =
-    useGestureEventsHandlers();
+  const {
+    handleOnBegin,
+    handleOnStart,
+    handleOnChange,
+    handleOnUpdate,
+    handleOnEnd,
+    handleOnFinalize,
+  } = useGestureEventsHandlers();
   //#endregion
 
   //#region gestures
@@ -32,27 +36,24 @@ const BottomSheetGestureHandlersProvider = ({
     GESTURE_SOURCE.CONTENT,
     animatedContentGestureState,
     animatedGestureSource,
+    handleOnBegin,
     handleOnStart,
-    handleOnActive,
-    handleOnEnd
-  );
-
-  const scrollablePanGestureHandler = useGestureHandler(
-    GESTURE_SOURCE.SCROLLABLE,
-    animatedContentGestureState,
-    animatedGestureSource,
-    handleOnStart,
-    handleOnActive,
-    handleOnEnd
+    handleOnChange,
+    handleOnUpdate,
+    handleOnEnd,
+    handleOnFinalize
   );
 
   const handlePanGestureHandler = useGestureHandler(
     GESTURE_SOURCE.HANDLE,
     animatedHandleGestureState,
     animatedGestureSource,
+    handleOnBegin,
     handleOnStart,
-    handleOnActive,
-    handleOnEnd
+    handleOnChange,
+    handleOnUpdate,
+    handleOnEnd,
+    handleOnFinalize
   );
   //#endregion
 
@@ -61,15 +62,9 @@ const BottomSheetGestureHandlersProvider = ({
     () => ({
       contentPanGestureHandler,
       handlePanGestureHandler,
-      scrollablePanGestureHandler,
       animatedGestureSource,
     }),
-    [
-      contentPanGestureHandler,
-      handlePanGestureHandler,
-      scrollablePanGestureHandler,
-      animatedGestureSource,
-    ]
+    [contentPanGestureHandler, handlePanGestureHandler, animatedGestureSource]
   );
   //#endregion
   return (

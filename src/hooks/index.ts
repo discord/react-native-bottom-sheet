@@ -12,7 +12,7 @@ export { useScrollHandler } from './useScrollHandler';
 
 // gestures
 export { useGestureHandler } from './useGestureHandler';
-export { useGestureEventsHandlersDefault } from './useGestureEventsHandlersDefault';
+export { useGestureEventsHandlers } from './useGestureEventsHandlersDefault';
 
 // utilities
 export { useKeyboard } from './useKeyboard';

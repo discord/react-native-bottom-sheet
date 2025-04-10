@@ -1,22 +1,17 @@
-import React, { forwardRef, useImperativeHandle, useMemo, useRef } from 'react';
-import { Platform } from 'react-native';
-import { useAnimatedProps, useAnimatedStyle } from 'react-native-reanimated';
-import { NativeViewGestureHandler } from 'react-native-gesture-handler';
-import BottomSheetDraggableView from '../bottomSheetDraggableView';
-import BottomSheetRefreshControl from '../bottomSheetRefreshControl';
+import React, { forwardRef, useImperativeHandle, useMemo } from 'react';
+import {
+  useAnimatedProps,
+  useAnimatedStyle,
+  isSharedValue,
+} from 'react-native-reanimated';
 import {
   useScrollHandler,
   useScrollableSetter,
   useBottomSheetInternal,
   useStableCallback,
 } from '../../hooks';
-import {
-  GESTURE_SOURCE,
-  SCROLLABLE_DECELERATION_RATE_MAPPER,
-  SCROLLABLE_STATE,
-  SCROLLABLE_TYPE,
-} from '../../constants';
-import { styles } from './styles';
+import type { SCROLLABLE_TYPE } from '../../constants';
+import { ScrollableContainer } from './ScrollableContainer';
 
 export function createBottomSheetScrollableComponent<T, P>(
   type: SCROLLABLE_TYPE,
@@ -27,7 +22,6 @@ export function createBottomSheetScrollableComponent<T, P>(
     const {
       // hooks
       focusHook,
-      scrollEventsHandlersHook,
       // props
       enableFooterMarginAdjustment = false,
       overScrollMode = 'never',
@@ -38,9 +32,7 @@ export function createBottomSheetScrollableComponent<T, P>(
       onRefresh,
       progressViewOffset,
       refreshControl,
-      scrollBuffer,
-      preserveScrollMomentum,
-      lockableScrollableContentOffsetY,
+      scrollEnabled: scrollEnabledProp,
       // events
       onScroll,
       onScrollBeginDrag,
@@ -49,41 +41,51 @@ export function createBottomSheetScrollableComponent<T, P>(
       ...rest
     }: any = props;
 
-    //#region refs
-    const nativeGestureRef = useRef<NativeViewGestureHandler>(null);
-    const refreshControlGestureRef = useRef<NativeViewGestureHandler>(null);
-    //#endregion
-
     //#region hooks
-    const { scrollableRef, scrollableContentOffsetY, scrollHandler } =
-      useScrollHandler(
-        scrollEventsHandlersHook,
-        onScroll,
-        onScrollBeginDrag,
-        onScrollEndDrag,
-        scrollBuffer,
-        preserveScrollMomentum,
-        lockableScrollableContentOffsetY
-      );
+    const scrollHandler = useScrollHandler(
+      onScroll,
+      onScrollBeginDrag,
+      onScrollEndDrag
+    );
     const {
-      enableContentPanningGesture,
+      animatedScrollableRef: scrollableRef,
       animatedFooterHeight,
-      animatedScrollableState,
-      animatedContentHeight,
+      isScrollEnabled,
       enableDynamicSizing,
+      animatedContentHeight,
+      animatedScrollableContentOffsetY,
+      isPanGestureMoving,
+      isExpanded,
     } = useBottomSheetInternal();
     //#endregion
 
     //#region variables
-    const scrollableAnimatedProps = useAnimatedProps(
-      () => ({
-        ...(preserveScrollMomentum ? {} : {decelerationRate: SCROLLABLE_DECELERATION_RATE_MAPPER[animatedScrollableState.value]}),
-        showsVerticalScrollIndicator: showsVerticalScrollIndicator
-          ? animatedScrollableState.value === SCROLLABLE_STATE.UNLOCKED
-          : showsVerticalScrollIndicator,
-      }),
-      [showsVerticalScrollIndicator]
-    );
+    const scrollableAnimatedProps = useAnimatedProps(() => {
+      const scrollEnabled =
+        (isSharedValue(scrollEnabledProp)
+          ? scrollEnabledProp.value
+          : scrollEnabledProp) !== false;
+      const showIndicator =
+        (isSharedValue(showsVerticalScrollIndicator)
+          ? showsVerticalScrollIndicator.value
+          : showsVerticalScrollIndicator) !== false;
+      return {
+        scrollEnabled: scrollEnabled && isExpanded.value,
+        // only bounce at bottom or not touching screen
+        bounces:
+          animatedScrollableContentOffsetY.value > 0 ||
+          !isPanGestureMoving.value,
+        showsVerticalScrollIndicator: showIndicator
+          ? isExpanded.value && animatedScrollableContentOffsetY.value > 1
+          : showIndicator,
+      };
+    }, [
+      animatedScrollableContentOffsetY,
+      isPanGestureMoving,
+      showsVerticalScrollIndicator,
+      isScrollEnabled,
+      scrollEnabledProp,
+    ]);
     //#endregion
 
     //#region callbacks
@@ -124,89 +126,27 @@ export function createBottomSheetScrollableComponent<T, P>(
     //#region effects
     // @ts-ignore
     useImperativeHandle(ref, () => scrollableRef.current);
-    useScrollableSetter(
-      scrollableRef,
-      type,
-      scrollableContentOffsetY,
-      onRefresh !== undefined,
-      scrollBuffer,
-      preserveScrollMomentum,
-      focusHook
-    );
+    useScrollableSetter(type, onRefresh !== undefined, focusHook);
     //#endregion
 
     //#region render
-    if (Platform.OS === 'android') {
-      const scrollableContent = (
-        <NativeViewGestureHandler
-          ref={nativeGestureRef}
-          enabled={enableContentPanningGesture}
-          shouldCancelWhenOutside={false}
-        >
-          <ScrollableComponent
-            animatedProps={scrollableAnimatedProps}
-            {...rest}
-            scrollEventThrottle={16}
-            ref={scrollableRef}
-            overScrollMode={overScrollMode}
-            keyboardDismissMode={keyboardDismissMode}
-            onScroll={scrollHandler}
-            onContentSizeChange={handleContentSizeChange}
-            style={containerStyle}
-          />
-        </NativeViewGestureHandler>
-      );
-      return (
-        <BottomSheetDraggableView
-          nativeGestureRef={nativeGestureRef}
-          refreshControlGestureRef={refreshControlGestureRef}
-          gestureType={GESTURE_SOURCE.SCROLLABLE}
-          style={styles.container}
-        >
-          {onRefresh ? (
-            <BottomSheetRefreshControl
-              ref={refreshControlGestureRef}
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-              progressViewOffset={progressViewOffset}
-              style={styles.container}
-            >
-              {scrollableContent}
-            </BottomSheetRefreshControl>
-          ) : (
-            scrollableContent
-          )}
-        </BottomSheetDraggableView>
-      );
-    }
     return (
-      <BottomSheetDraggableView
-        nativeGestureRef={nativeGestureRef}
-        gestureType={GESTURE_SOURCE.SCROLLABLE}
-        style={styles.container}
-      >
-        <NativeViewGestureHandler
-          ref={nativeGestureRef}
-          enabled={enableContentPanningGesture}
-          shouldCancelWhenOutside={false}
-        >
-          <ScrollableComponent
-            animatedProps={scrollableAnimatedProps}
-            {...rest}
-            scrollEventThrottle={16}
-            ref={scrollableRef}
-            overScrollMode={overScrollMode}
-            keyboardDismissMode={keyboardDismissMode}
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            progressViewOffset={progressViewOffset}
-            refreshControl={refreshControl}
-            onScroll={scrollHandler}
-            onContentSizeChange={handleContentSizeChange}
-            style={containerStyle}
-          />
-        </NativeViewGestureHandler>
-      </BottomSheetDraggableView>
+      <ScrollableContainer
+        ref={scrollableRef}
+        animatedProps={scrollableAnimatedProps}
+        overScrollMode={overScrollMode}
+        keyboardDismissMode={keyboardDismissMode}
+        refreshing={refreshing}
+        scrollEventThrottle={1}
+        progressViewOffset={progressViewOffset}
+        style={containerStyle}
+        onRefresh={onRefresh}
+        onScroll={scrollHandler}
+        ScrollableComponent={ScrollableComponent}
+        refreshControl={refreshControl}
+        onContentSizeChange={handleContentSizeChange}
+        {...rest}
+      />
     );
     //#endregion
   });
