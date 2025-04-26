@@ -478,10 +478,10 @@ const BottomSheetModal = memo(forwardRef(BottomSheetModalComponent)) as <
   props: BottomSheetModalProps<T> & {
     ref?: React.ForwardedRef<BottomSheetModal<T>>;
   }
-) => ReturnType<typeof BottomSheetModalComponent>;
+) => ReturnType<typeof BottomSheetModalComponent<any>>;
 (
   BottomSheetModal as React.MemoExoticComponent<
-    typeof BottomSheetModalComponent
+    (props: BottomSheetModalProps<any>) => React.JSX.Element
   >
 ).displayName = 'BottomSheetModal';
 
