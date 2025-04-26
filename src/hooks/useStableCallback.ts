@@ -7,7 +7,7 @@ type Callback<T> = (...args: T[]) => any;
  * Provide a stable version of useCallback.
  */
 export function useStableCallback<T>(callback: Callback<T>) {
-  const callbackRef = useRef<Callback<T>>();
+  const callbackRef = useRef<Callback<T> | undefined>(undefined);
 
   useLayoutEffect(() => {
     callbackRef.current = callback;
