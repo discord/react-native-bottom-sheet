@@ -213,7 +213,9 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
       _providedHandleHeight ?? INITIAL_HANDLE_HEIGHT
     );
     const animatedFooterHeight = useSharedValue(0);
-    const animatedContentHeight = useSharedValue(_providedContentHeight ?? INITIAL_CONTAINER_HEIGHT);
+    const animatedContentHeight = useSharedValue(
+      _providedContentHeight ?? INITIAL_CONTAINER_HEIGHT
+    );
     const [animatedSnapPoints, animatedDynamicSnapPointIndex] =
       useAnimatedSnapPoints(
         _providedSnapPoints,
@@ -1672,7 +1674,7 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
          */
         if (
           (Platform.OS === 'android' &&
-          android_keyboardInputMode === KEYBOARD_INPUT_MODE.adjustResize) ||
+            android_keyboardInputMode === KEYBOARD_INPUT_MODE.adjustResize) ||
           /**
            * if the sheet is closing, then exit then method
            */
