@@ -171,8 +171,11 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
         _providedAccessibilityLabel = DEFAULT_ACCESSIBILITY_LABEL,
       accessibilityRole:
         _providedAccessibilityRole = DEFAULT_ACCESSIBILITY_ROLE,
+      AnimatedContainerComponent,
     } = props;
     //#endregion
+
+    const ContainerComponent = AnimatedContainerComponent ?? Animated.View;
 
     //#region validate props
     if (__DEV__) {
@@ -1911,7 +1914,7 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
               detached={detached}
               style={_providedContainerStyle}
             >
-              <Animated.View style={containerStyle}>
+              <ContainerComponent style={containerStyle}>
                 <BottomSheetBackgroundContainer
                   key="BottomSheetBackgroundContainer"
                   animatedIndex={animatedIndex}
@@ -1950,7 +1953,7 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
                   handleStyle={_providedHandleStyle}
                   handleIndicatorStyle={_providedHandleIndicatorStyle}
                 />
-              </Animated.View>
+              </ContainerComponent>
               {/* <BottomSheetDebugView
                 values={{
                   // topInset,

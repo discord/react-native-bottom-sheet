@@ -1,6 +1,7 @@
 import type React from 'react';
-import type { Insets, StyleProp, ViewStyle } from 'react-native';
+import type { Insets, StyleProp, ViewProps, ViewStyle } from 'react-native';
 import type { PanGesture } from 'react-native-gesture-handler';
+import type { AnimatedProps } from 'react-native-reanimated';
 import type {
   AnimateStyle,
   ReduceMotion,
@@ -196,6 +197,13 @@ export interface BottomSheetProps
    * @default undefined
    */
   containerStyle?: StyleProp<ViewStyle>;
+
+  /**
+   * AnimatedContainerComponent
+   * The container component to be used for the bottom sheet.
+   * If not provided, the default is `Animated.View` from react-native-reanimated.
+   */
+  AnimatedContainerComponent?: React.ComponentClass<AnimatedProps<unknown>>;
   /**
    * View style to be applied to the sheet container component,
    * it also could be an Animated Style.
