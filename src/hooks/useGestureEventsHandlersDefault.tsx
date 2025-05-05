@@ -1,4 +1,4 @@
-import { Keyboard, Platform } from 'react-native';
+import { Keyboard, Platform, useWindowDimensions } from 'react-native';
 import { runOnJS, useWorkletCallback } from 'react-native-reanimated';
 import { useBottomSheetInternal } from './useBottomSheetInternal';
 import {
@@ -6,7 +6,6 @@ import {
   GESTURE_SOURCE,
   KEYBOARD_STATE,
   SCROLLABLE_TYPE,
-  WINDOW_HEIGHT,
 } from '../constants';
 import type {
   GestureEventsHandlersHookType,
@@ -236,6 +235,8 @@ export const useGestureEventsHandlersDefault: GestureEventsHandlersHookType =
           animatedScrollableContentOffsetY,
         ]
       );
+    const windowDimensions = useWindowDimensions();
+    const windowHeight = windowDimensions.height;
     const handleOnEnd: GestureEventHandlerCallbackType<GestureEventContextType> =
       useWorkletCallback(
         function handleOnEnd(
@@ -309,7 +310,7 @@ export const useGestureEventsHandlersDefault: GestureEventsHandlersHookType =
               !(
                 Platform.OS === 'ios' &&
                 isScrollable &&
-                absoluteY > WINDOW_HEIGHT - animatedKeyboardHeight.value
+                absoluteY > windowHeight - animatedKeyboardHeight.value
               )
             ) {
               runOnJS(dismissKeyboard)();
@@ -378,6 +379,7 @@ export const useGestureEventsHandlersDefault: GestureEventsHandlersHookType =
           animatedSnapPoints,
           animatedScrollableContentOffsetY,
           animateToPosition,
+          windowHeight,
         ]
       );
     //#endregion

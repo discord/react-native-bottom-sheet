@@ -3,10 +3,10 @@ import {
   LayoutChangeEvent,
   StatusBar,
   StyleProp,
+  useWindowDimensions,
   View,
   ViewStyle,
 } from 'react-native';
-import { WINDOW_HEIGHT } from '../../constants';
 import { print } from '../../utilities';
 import { styles } from './styles';
 import type { BottomSheetContainerProps } from './types';
@@ -37,6 +37,9 @@ function BottomSheetContainerComponent({
   );
   //#endregion
 
+  const windowDimensions = useWindowDimensions();
+  const windowHeight = windowDimensions.height;
+
   //#region callbacks
   const handleContainerLayout = useCallback(
     function handleContainerLayout({
@@ -54,7 +57,7 @@ function BottomSheetContainerComponent({
             right: 0,
             bottom: Math.max(
               0,
-              WINDOW_HEIGHT -
+              windowHeight -
                 ((pageY ?? 0) + height + (StatusBar.currentHeight ?? 0))
             ),
           };
@@ -69,7 +72,7 @@ function BottomSheetContainerComponent({
         },
       });
     },
-    [containerHeight, containerOffset, containerRef]
+    [containerHeight, containerOffset, containerRef, windowHeight]
   );
   //#endregion
 

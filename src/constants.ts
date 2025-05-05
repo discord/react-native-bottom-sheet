@@ -1,7 +1,7 @@
 import { Dimensions, Platform } from 'react-native';
 import Animated, { Easing } from 'react-native-reanimated';
 
-const { height: WINDOW_HEIGHT, width: WINDOW_WIDTH } = Dimensions.get('window');
+const { width: WINDOW_WIDTH } = Dimensions.get('window');
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('screen');
 
 enum GESTURE_SOURCE {
@@ -125,7 +125,6 @@ export {
   SCROLLABLE_TYPE,
   SCROLLABLE_STATE,
   KEYBOARD_STATE,
-  WINDOW_HEIGHT,
   WINDOW_WIDTH,
   SCREEN_HEIGHT,
   SCREEN_WIDTH,

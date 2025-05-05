@@ -1,4 +1,4 @@
-import { Keyboard, Platform } from 'react-native';
+import { Keyboard, Platform, useWindowDimensions } from 'react-native';
 import { runOnJS, useWorkletCallback } from 'react-native-reanimated';
 import { clamp, snapPoint } from 'react-native-redash';
 import {
@@ -6,7 +6,6 @@ import {
   GESTURE_SOURCE,
   KEYBOARD_STATE,
   SCROLLABLE_TYPE,
-  WINDOW_HEIGHT,
   GestureEventHandlerCallbackType,
   ANIMATION_SOURCE,
 } from '@gorhom/bottom-sheet';
@@ -211,6 +210,8 @@ export const useCustomGestureEventsHandlers = () => {
       animatedScrollableContentOffsetY,
     ]
   );
+  const windowDimensions = useWindowDimensions();
+  const windowHeight = windowDimensions.height;
   const handleOnEnd: GestureEventHandlerCallbackType = useWorkletCallback(
     function handleOnEnd(
       source,
@@ -265,7 +266,7 @@ export const useCustomGestureEventsHandlers = () => {
           !(
             Platform.OS === 'ios' &&
             isScrollable &&
-            absoluteY > WINDOW_HEIGHT - animatedKeyboardHeight.value
+            absoluteY > windowHeight - animatedKeyboardHeight.value
           )
         ) {
           dismissKeyboardOnJs();
@@ -345,6 +346,7 @@ export const useCustomGestureEventsHandlers = () => {
       animatedScrollableContentOffsetY,
       isInTemporaryPosition,
       isScrollableRefreshable,
+      windowHeight,
     ]
   );
 
