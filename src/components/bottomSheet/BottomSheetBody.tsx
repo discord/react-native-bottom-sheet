@@ -1,16 +1,21 @@
-import React, { memo, useMemo } from 'react';
+import React, { type ComponentProps, memo, useMemo } from 'react';
 import { Platform } from 'react-native';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { useBottomSheetInternal } from '../../hooks';
 import type { BottomSheetProps } from '../bottomSheet/types';
 import { styles } from './styles';
 
-type BottomSheetBodyProps = {
+export type BottomSheetBodyProps = {
   style?: BottomSheetProps['style'];
   children?: React.ReactNode;
+  BodyComponent?: React.ComponentType<ComponentProps<typeof Animated.View>>;
 };
 
-function BottomSheetBodyComponent({ style, children }: BottomSheetBodyProps) {
+function BottomSheetBodyComponent({
+  style,
+  children,
+  BodyComponent = Animated.View,
+}: BottomSheetBodyProps) {
   //#region hooks
   const { animatedIndex, animatedPosition } = useBottomSheetInternal();
   //#endregion
@@ -34,9 +39,9 @@ function BottomSheetBodyComponent({ style, children }: BottomSheetBodyProps) {
   //#endregion
 
   return (
-    <Animated.View style={containerStyle} collapsable={true}>
+    <BodyComponent style={containerStyle} collapsable={true}>
       {children}
-    </Animated.View>
+    </BodyComponent>
   );
 }
 

@@ -23,11 +23,13 @@ import type { BottomSheetBackdropProps } from '../bottomSheetBackdrop';
 import type { BottomSheetBackgroundProps } from '../bottomSheetBackground';
 import type { BottomSheetFooterProps } from '../bottomSheetFooter';
 import type { BottomSheetHandleProps } from '../bottomSheetHandle';
+import type { BottomSheetBodyProps } from './BottomSheetBody';
 
 export interface BottomSheetProps
   extends BottomSheetAnimationConfigs,
     Partial<BottomSheetGestureProps>,
-    Omit<NullableAccessibilityProps, 'accessibilityHint'> {
+    Omit<NullableAccessibilityProps, 'accessibilityHint'>,
+    Pick<BottomSheetBodyProps, 'BodyComponent'> {
   //#region configuration
   /**
    * Initial snap point index, provide `-1` to initiate bottom sheet in closed state.

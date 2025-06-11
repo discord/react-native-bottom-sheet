@@ -164,6 +164,7 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
       backgroundComponent,
       renderFooter,
       children,
+      BodyComponent,
 
       // accessibility
       accessible: _providedAccessible = DEFAULT_ACCESSIBLE,
@@ -213,7 +214,9 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
       _providedHandleHeight ?? INITIAL_HANDLE_HEIGHT
     );
     const animatedFooterHeight = useSharedValue(0);
-    const animatedContentHeight = useSharedValue(_providedContentHeight ?? INITIAL_CONTAINER_HEIGHT);
+    const animatedContentHeight = useSharedValue(
+      _providedContentHeight ?? INITIAL_CONTAINER_HEIGHT
+    );
     const [animatedSnapPoints, animatedDynamicSnapPointIndex] =
       useAnimatedSnapPoints(
         _providedSnapPoints,
@@ -1798,7 +1801,7 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
               detached={detached}
               style={_providedContainerStyle}
             >
-              <BottomSheetBody style={style}>
+              <BottomSheetBody style={style} BodyComponent={BodyComponent}>
                 {backgroundComponent === null ? null : (
                   <BottomSheetBackgroundContainer
                     key="BottomSheetBackgroundContainer"
