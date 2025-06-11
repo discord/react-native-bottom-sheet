@@ -2,7 +2,6 @@
 import type { FlashListProps } from '@shopify/flash-list';
 import React, { forwardRef, memo, type Ref, useMemo } from 'react';
 import type { ScrollViewProps } from 'react-native';
-import type Animated from 'react-native-reanimated';
 import BottomSheetScrollView from './BottomSheetScrollView';
 import type {
   BottomSheetScrollViewMethods,
@@ -19,7 +18,7 @@ try {
 } catch (_) {}
 
 export type BottomSheetFlashListProps<T> = Omit<
-  Animated.AnimateProps<FlashListProps<T>>,
+  FlashListProps<T>,
   'decelerationRate' | 'scrollEventThrottle'
 > &
   BottomSheetScrollableProps & {
