@@ -43,6 +43,7 @@ export function createBottomSheetScrollableComponent<T, P>(
       onRefresh,
       progressViewOffset,
       refreshControl,
+      preserveScrollMomentum,
       // events
       onScroll,
       onScrollBeginDrag,
@@ -74,13 +75,12 @@ export function createBottomSheetScrollableComponent<T, P>(
     //#region variables
     const scrollableAnimatedProps = useAnimatedProps(
       () => ({
-        decelerationRate:
-          SCROLLABLE_DECELERATION_RATE_MAPPER[animatedScrollableState.value],
+        ...(preserveScrollMomentum ? {} : {decelerationRate: SCROLLABLE_DECELERATION_RATE_MAPPER[animatedScrollableState.value]}),
         showsVerticalScrollIndicator: showsVerticalScrollIndicator
           ? animatedScrollableState.value === SCROLLABLE_STATE.UNLOCKED
           : showsVerticalScrollIndicator,
       }),
-      [animatedScrollableState, showsVerticalScrollIndicator]
+      [animatedScrollableState, showsVerticalScrollIndicator, preserveScrollMomentum]
     );
 
     const scrollableGesture = useMemo(

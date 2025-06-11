@@ -47,6 +47,11 @@ export interface BottomSheetScrollableProps {
    * @default useScrollEventsHandlersDefault
    */
   scrollEventsHandlersHook?: ScrollEventsHandlersHookType;
+
+  /**
+   * Whether or not to preserve scroll momentum when expanding a scrollable bottom sheet component.Add commentMore actions
+   */
+  preserveScrollMomentum?: boolean;
 }
 
 export type ScrollableProps<T> =
