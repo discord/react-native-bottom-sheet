@@ -52,6 +52,11 @@ export interface BottomSheetScrollableProps {
    * Whether or not to preserve scroll momentum when expanding a scrollable bottom sheet component.Add commentMore actions
    */
   preserveScrollMomentum?: boolean;
+
+  /**
+   * The optional lockable scrollable content offset ref, which will remain the same value when scrollable is locked.Add commentMore actions
+   */
+  lockableScrollableContentOffsetY?: Animated.SharedValue<number>;
 }
 
 export type ScrollableProps<T> =

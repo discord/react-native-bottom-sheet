@@ -180,7 +180,8 @@ type ScrollEventHandlerCallbackType<C = never> = (
 
 export type ScrollEventsHandlersHookType = (
   ref: React.RefObject<Scrollable>,
-  contentOffsetY: SharedValue<number>
+  contentOffsetY: SharedValue<number>,
+  lockableScrollableContentOffsetY?: SharedValue<number>
 ) => {
   handleOnScroll?: ScrollEventHandlerCallbackType;
   handleOnBeginDrag?: ScrollEventHandlerCallbackType;
