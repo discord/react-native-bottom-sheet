@@ -117,7 +117,7 @@ export interface BottomSheetVariables {
 export type Scrollable = FlatList | ScrollView | SectionList;
 export type ScrollableRef = {
   id: number;
-  node: React.RefObject<Scrollable>;
+  node: React.RefObject<Scrollable | null>;
 };
 export type ScrollableEvent = (
   event: Pick<NativeSyntheticEvent<NativeScrollEvent>, 'nativeEvent'>
@@ -179,7 +179,7 @@ type ScrollEventHandlerCallbackType<C = never> = (
 ) => void;
 
 export type ScrollEventsHandlersHookType = (
-  ref: React.RefObject<Scrollable>,
+  ref: React.RefObject<Scrollable | null>,
   contentOffsetY: SharedValue<number>,
   lockableScrollableContentOffsetY?: SharedValue<number>
 ) => {

@@ -7,7 +7,7 @@ import { findNodeHandle } from '../utilities';
 import { useBottomSheetInternal } from './useBottomSheetInternal';
 
 export const useScrollableSetter = (
-  ref: React.RefObject<Scrollable>,
+  ref: React.RefObject<Scrollable | null>,
   type: SCROLLABLE_TYPE,
   contentOffsetY: SharedValue<number>,
   refreshable: boolean,

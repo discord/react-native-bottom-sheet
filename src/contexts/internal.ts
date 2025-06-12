@@ -61,7 +61,7 @@ export interface BottomSheetInternalContextType
   stopAnimation: () => void;
   animateToPosition: AnimateToPositionType;
   setScrollableRef: (ref: ScrollableRef) => void;
-  removeScrollableRef: (ref: RefObject<Scrollable>) => void;
+  removeScrollableRef: (ref: RefObject<Scrollable | null>) => void;
 }
 
 export const BottomSheetInternalContext =
