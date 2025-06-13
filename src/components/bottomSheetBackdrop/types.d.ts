@@ -1,5 +1,6 @@
-import type { ReactNode } from 'react';
+import type { ComponentType, ReactNode } from 'react';
 import type { ViewProps } from 'react-native';
+import type { AnimatedProps } from 'react-native-reanimated';
 import type {
   BottomSheetVariables,
   NullableAccessibilityProps,
@@ -55,4 +56,10 @@ export interface BottomSheetDefaultBackdropProps
    * Child component that will be rendered on backdrop.
    */
   children?: ReactNode | ReactNode[];
+
+  /**
+   * Optional component that will be used as a backdrop.
+   * Default is `Reanimated.View`.
+   */
+  ViewComponent?: ComponentType<AnimatedProps<ViewProps>>;
 }

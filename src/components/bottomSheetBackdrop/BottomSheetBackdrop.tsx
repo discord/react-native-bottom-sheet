@@ -40,6 +40,7 @@ const BottomSheetBackdropComponent = ({
   onPress,
   style,
   children,
+  ViewComponent: AnimatedViewComponent = Animated.View,
   accessible: _providedAccessible = DEFAULT_ACCESSIBLE,
   accessibilityRole: _providedAccessibilityRole = DEFAULT_ACCESSIBILITY_ROLE,
   accessibilityLabel: _providedAccessibilityLabel = DEFAULT_ACCESSIBILITY_LABEL,
@@ -136,7 +137,7 @@ const BottomSheetBackdropComponent = ({
   //#endregion
 
   const AnimatedView = (
-    <Animated.View
+    <AnimatedViewComponent
       style={containerStyle}
       pointerEvents={pointerEvents}
       accessible={_providedAccessible ?? undefined}
@@ -151,7 +152,7 @@ const BottomSheetBackdropComponent = ({
       }
     >
       {children}
-    </Animated.View>
+    </AnimatedViewComponent>
   );
 
   return pressBehavior !== 'none' ? (
