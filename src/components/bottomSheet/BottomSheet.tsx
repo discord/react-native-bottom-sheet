@@ -542,7 +542,7 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
     );
     // biome-ignore lint/correctness/useExhaustiveDependencies(BottomSheet.name): used for debug only
     const handleOnAnimate = useCallback(
-      function handleOnAnimate(targetIndex: number, targetPosition: number) {
+      function handleOnAnimate(targetIndex: number, targetPosition: number, source: ANIMATION_SOURCE) {
         if (__DEV__) {
           print({
             component: BottomSheet.name,
@@ -561,12 +561,16 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
           return;
         }
 
-        if (targetIndex !== animatedCurrentIndex.value) {
+        if (targetIndex !== animatedCurrentIndex.value 
+            // there is a race condition when opening and immedately closing the bottom sheet, where
+            // the animatedCurrentIndex is not updated yet. As we don't want to miss close events we always call the callback for -1 changes:
+            || targetIndex === -1) {
           _providedOnAnimate(
             animatedCurrentIndex.value,
             targetIndex,
             animatedPosition.value,
-            targetPosition
+            targetPosition,
+            source,
           );
         }
       },
@@ -675,7 +679,7 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
         /**
          * fire `onAnimate` callback
          */
-        runOnJS(handleOnAnimate)(animatedNextPositionIndex.value, position);
+        runOnJS(handleOnAnimate)(animatedNextPositionIndex.value, position, source);
 
         /**
          * start animation

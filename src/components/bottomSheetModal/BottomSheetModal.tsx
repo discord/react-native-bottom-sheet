@@ -9,7 +9,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import type { SNAP_POINT_TYPE } from '../../constants';
+import type { ANIMATION_SOURCE, SNAP_POINT_TYPE } from '../../constants';
 import { useBottomSheetModalInternal } from '../../hooks';
 import type { BottomSheetMethods, BottomSheetModalMethods } from '../../types';
 import { print } from '../../utilities';
@@ -383,12 +383,13 @@ function BottomSheetModalComponent<T = any>(
       fromIndex: number,
       toIndex: number,
       fromPosition: number,
-      toPosition: number
+      toPosition: number,
+      source: ANIMATION_SOURCE
     ) => {
       nextIndexRef.current = toIndex;
 
       if (_providedOnAnimate) {
-        _providedOnAnimate(fromIndex, toIndex, fromPosition, toPosition);
+        _providedOnAnimate(fromIndex, toIndex, fromPosition, toPosition, source);
       }
     },
     [_providedOnAnimate]

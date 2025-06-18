@@ -290,7 +290,8 @@ export interface BottomSheetProps
     fromIndex: number,
     toIndex: number,
     fromPosition: number,
-    toPosition: number
+    toPosition: number,
+    source: ANIMATION_SOURCE
   ) => void;
   //#endregion
 
