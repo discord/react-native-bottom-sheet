@@ -27,7 +27,17 @@ const KEYBOARD_EVENT_MAPPER = {
   }) as KeyboardEventName,
 };
 
-export const useKeyboard = () => {
+export type UseKeyboardArgs = {
+  /**
+   * Determines the bottom offset of the keyboard (e.g. nav bar) and includes it in the keyboard height.
+   * @default false
+   */
+  includeBottomOffset?: boolean;
+}
+
+export const useKeyboard = ({
+  includeBottomOffset
+}: UseKeyboardArgs) => {
   //#region variables
   const shouldHandleKeyboardEvents = useSharedValue(false);
   const keyboardState = useSharedValue<KEYBOARD_STATE>(
@@ -66,7 +76,7 @@ export const useKeyboard = () => {
        * if keyboard had an bottom offset -android bottom bar-, then
        * we add that offset to the keyboard height.
        */
-      if (bottomOffset) {
+      if (bottomOffset && includeBottomOffset) {
         keyboardHeight.value = keyboardHeight.value + bottomOffset;
       }
 

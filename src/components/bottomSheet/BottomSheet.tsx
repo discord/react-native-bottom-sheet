@@ -75,6 +75,7 @@ import {
   DEFAULT_ENABLE_PAN_DOWN_TO_CLOSE,
   DEFAULT_KEYBOARD_BEHAVIOR,
   DEFAULT_KEYBOARD_BLUR_BEHAVIOR,
+  DEFAULT_KEYBOARD_INCLUDE_BOTTOM_OFFSET,
   DEFAULT_KEYBOARD_INPUT_MODE,
   DEFAULT_OVER_DRAG_RESISTANCE_FACTOR,
   INITIAL_CONTAINER_HEIGHT,
@@ -127,6 +128,7 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
       keyboardBlurBehavior = DEFAULT_KEYBOARD_BLUR_BEHAVIOR,
       android_keyboardInputMode = DEFAULT_KEYBOARD_INPUT_MODE,
       enableBlurKeyboardOnGesture = DEFAULT_ENABLE_BLUR_KEYBOARD_ON_GESTURE,
+      keyboardIncludeBottomOffset = DEFAULT_KEYBOARD_INCLUDE_BOTTOM_OFFSET,
 
       // layout
       containerHeight: _providedContainerHeight,
@@ -329,7 +331,7 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
       animationDuration: keyboardAnimationDuration,
       animationEasing: keyboardAnimationEasing,
       shouldHandleKeyboardEvents,
-    } = useKeyboard();
+    } = useKeyboard({ includeBottomOffset: keyboardIncludeBottomOffset });
     const animatedKeyboardHeightInContainer = useSharedValue(0);
     const userReduceMotionSetting = useReducedMotion();
     const reduceMotion = useMemo(() => {

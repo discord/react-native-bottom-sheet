@@ -194,6 +194,12 @@ export interface BottomSheetProps
    */
   android_keyboardInputMode?: keyof typeof KEYBOARD_INPUT_MODE;
 
+  /**
+   * Determines the bottom offset of the keyboard (e.g. nav bar) and includes it in the keyboard height.
+   * @default false
+   */
+  keyboardIncludeBottomOffset?: boolean;
+
   //#endregion
 
   //#region styles
