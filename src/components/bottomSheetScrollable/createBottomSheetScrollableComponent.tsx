@@ -48,6 +48,7 @@ export function createBottomSheetScrollableComponent<T, P>(
       onScroll,
       onScrollBeginDrag,
       onScrollEndDrag,
+      lockableScrollableContentOffsetY,
       onContentSizeChange,
       ...rest
       // biome-ignore lint: to be addressed!
@@ -61,7 +62,8 @@ export function createBottomSheetScrollableComponent<T, P>(
         scrollEventsHandlersHook,
         onScroll,
         onScrollBeginDrag,
-        onScrollEndDrag
+        onScrollEndDrag,
+        lockableScrollableContentOffsetY
       );
     const { animatedScrollableState, enableContentPanningGesture } =
       useBottomSheetInternal();
