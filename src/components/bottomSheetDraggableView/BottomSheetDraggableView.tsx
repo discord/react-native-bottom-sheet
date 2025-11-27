@@ -24,6 +24,7 @@ const BottomSheetDraggableViewComponent = ({
     activeOffsetY,
     failOffsetX,
     failOffsetY,
+    animatedScrollableContentOffsetY,
   } = useBottomSheetInternal();
   const { contentPanGestureHandler } = useBottomSheetGestureHandlers();
   //#endregion
@@ -59,6 +60,14 @@ const BottomSheetDraggableViewComponent = ({
       .enabled(enableContentPanningGesture)
       .shouldCancelWhenOutside(false)
       .runOnJS(false)
+      .manualActivation(true)
+      .onTouchesMove((_, stateManager) => {
+        if (animatedScrollableContentOffsetY.value !== 0) {
+          stateManager.fail();
+          return;
+        }
+        stateManager.activate();
+      })
       .onStart(contentPanGestureHandler.handleOnStart)
       .onChange(contentPanGestureHandler.handleOnChange)
       .onEnd(contentPanGestureHandler.handleOnEnd)
@@ -99,6 +108,7 @@ const BottomSheetDraggableViewComponent = ({
     failOffsetY,
     simultaneousHandlers,
     waitFor,
+    animatedScrollableContentOffsetY,
     contentPanGestureHandler.handleOnChange,
     contentPanGestureHandler.handleOnEnd,
     contentPanGestureHandler.handleOnFinalize,
