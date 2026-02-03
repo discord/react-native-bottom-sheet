@@ -85,7 +85,7 @@ export function createBottomSheetScrollableComponent<T, P>(
       [animatedScrollableState, showsVerticalScrollIndicator, preserveScrollMomentum]
     );
 
-    React.useEffect(() => {console.log('testing code');}
+    React.useEffect(() => {console.log('testing code');});
     
     const scrollableGesture = useMemo(
       () =>
