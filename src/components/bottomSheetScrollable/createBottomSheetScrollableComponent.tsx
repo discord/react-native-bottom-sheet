@@ -86,13 +86,12 @@ export function createBottomSheetScrollableComponent<T, P>(
     );
 
     React.useEffect(() => {console.log('testing code');});
-    
+
     const scrollableGesture = useMemo(
       () =>
         draggableGesture
           ? Gesture.Native()
-              // @ts-ignore
-              .simultaneousWithExternalGesture(draggableGesture)
+              .requireExternalGestureToFail(draggableGesture) // Let sheet drag take priority
               .shouldCancelWhenOutside(true)
           : undefined,
       [draggableGesture]
