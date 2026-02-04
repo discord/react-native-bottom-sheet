@@ -91,7 +91,6 @@ export function createBottomSheetScrollableComponent<T, P>(
       () =>
         draggableGesture
           ? Gesture.Native()
-              .requireExternalGestureToFail(draggableGesture) // Let sheet drag take priority
               .shouldCancelWhenOutside(true)
           : undefined,
       [draggableGesture]
