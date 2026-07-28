@@ -29,10 +29,9 @@ export const useScrollEventsHandlersDefault: ScrollEventsHandlersHookType = (
   const _lockableScrollableContentOffsetY = useSharedValue(0);
 
   /**
-   * Tracks whether we are inside the scroll-lock `scrollTo` below, so that a
-   * synchronous re-entry into `handleOnScroll` can bail out instead of
-   * recursing. Inert on the legacy renderer, where `scrollTo` is async and the
-   * flag is always back to `false` before the next scroll event arrives.
+   * on the new renderer `scrollTo` is synchronous, so the scroll lock below
+   * re-enters `handleOnScroll` and recurses until the native stack overflows.
+   * we suppress the nested call and let the outermost one finish the lock.
    */
   const isLockingScroll = useSharedValue(false);
 
@@ -70,15 +69,6 @@ export const useScrollEventsHandlersDefault: ScrollEventsHandlersHookType = (
         }
 
         if (animatedScrollableState.value === SCROLLABLE_STATE.LOCKED) {
-          /**
-           * On the new renderer `scrollTo` is synchronous, so it re-enters this
-           * handler before returning (`setContentOffset:` -> `_notifyDidScroll`
-           * -> `onScroll`). While a pan gesture is active the scrollable is
-           * still being driven by the gesture, so the offset never settles at
-           * `lockPosition` and every re-entry issues another `scrollTo` until
-           * the native stack overflows. Suppress the nested call and let the
-           * outermost one finish the lock.
-           */
           if (isLockingScroll.value) {
             return;
           }
