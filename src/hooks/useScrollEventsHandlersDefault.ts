@@ -29,9 +29,10 @@ export const useScrollEventsHandlersDefault: ScrollEventsHandlersHookType = (
   const _lockableScrollableContentOffsetY = useSharedValue(0);
 
   /**
-   * on the new renderer `scrollTo` is synchronous, so the scroll lock below
-   * re-enters `handleOnScroll` and recurses until the native stack overflows.
-   * we suppress the nested call and let the outermost one finish the lock.
+   * on the new renderer `scrollTo` is synchronous and, with `animated: false`,
+   * re-emits `onScroll` and `onMomentumScrollEnd` before returning. that
+   * re-enters the scroll locks below and recurses until the native stack
+   * overflows, so we suppress nested calls and let the outermost one finish.
    */
   const isLockingScroll = useSharedValue(false);
 
@@ -126,11 +127,17 @@ export const useScrollEventsHandlersDefault: ScrollEventsHandlersHookType = (
     useWorkletCallback(
       ({ contentOffset: { y } }, context) => {
         if (animatedScrollableState.value === SCROLLABLE_STATE.LOCKED) {
+          if (isLockingScroll.value) {
+            return;
+          }
+
           const lockPosition = context.shouldLockInitialPosition
             ? (context.initialContentOffsetY ?? 0)
             : 0;
+          isLockingScroll.value = true;
           // @ts-ignore
           scrollTo(scrollableRef, 0, lockPosition, false);
+          isLockingScroll.value = false;
           scrollableContentOffsetY.value = lockPosition;
           _lockableScrollableContentOffsetY.value = lockPosition;
           return;
@@ -148,17 +155,24 @@ export const useScrollEventsHandlersDefault: ScrollEventsHandlersHookType = (
         animatedAnimationState,
         animatedScrollableState,
         rootScrollableContentOffsetY,
+        isLockingScroll,
       ]
     );
   const handleOnMomentumEnd: ScrollEventHandlerCallbackType<ScrollEventContextType> =
     useWorkletCallback(
       ({ contentOffset: { y } }, context) => {
         if (animatedScrollableState.value === SCROLLABLE_STATE.LOCKED) {
+          if (isLockingScroll.value) {
+            return;
+          }
+
           const lockPosition = context.shouldLockInitialPosition
             ? (context.initialContentOffsetY ?? 0)
             : 0;
+          isLockingScroll.value = true;
           // @ts-ignore
           scrollTo(scrollableRef, 0, lockPosition, false);
+          isLockingScroll.value = false;
           scrollableContentOffsetY.value = 0;
           _lockableScrollableContentOffsetY.value = 0;
           return;
@@ -176,6 +190,7 @@ export const useScrollEventsHandlersDefault: ScrollEventsHandlersHookType = (
         animatedAnimationState,
         animatedScrollableState,
         rootScrollableContentOffsetY,
+        isLockingScroll,
       ]
     );
   //#endregion
