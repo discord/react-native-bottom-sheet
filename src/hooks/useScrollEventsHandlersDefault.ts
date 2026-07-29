@@ -29,10 +29,10 @@ export const useScrollEventsHandlersDefault: ScrollEventsHandlersHookType = (
   const _lockableScrollableContentOffsetY = useSharedValue(0);
 
   /**
-   * on the new renderer `scrollTo` is synchronous and, with `animated: false`,
-   * re-emits `onScroll` and `onMomentumScrollEnd` before returning. that
-   * re-enters the scroll locks below and recurses until the native stack
-   * overflows, so we suppress nested calls and let the outermost one finish.
+   * `scrollTo` is a synchronous UI-thread call, and on the new renderer a
+   * non-animated one re-emits `onScroll` and `onMomentumScrollEnd` before
+   * returning. that re-enters the scroll locks below and overflows the native
+   * stack, so we suppress nested calls and let the outermost one finish.
    */
   const isLockingScroll = useSharedValue(false);
 
