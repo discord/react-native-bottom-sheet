@@ -3,7 +3,7 @@ import { RefreshControl, type RefreshControlProps } from 'react-native';
 import {
   Gesture,
   GestureDetector,
-  type SimultaneousGesture,
+  type LegacySimultaneousGesture,
 } from 'react-native-gesture-handler';
 import Animated, { useAnimatedProps } from 'react-native-reanimated';
 import { SCROLLABLE_STATE } from '../../constants';
@@ -13,7 +13,7 @@ import { useBottomSheetInternal } from '../../hooks';
 const AnimatedRefreshControl = Animated.createAnimatedComponent(RefreshControl);
 
 interface BottomSheetRefreshControlProps extends RefreshControlProps {
-  scrollableGesture: SimultaneousGesture;
+  scrollableGesture: LegacySimultaneousGesture;
 }
 
 function BottomSheetRefreshControlComponent({
