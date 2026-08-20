@@ -80,6 +80,24 @@ export interface BottomSheetMethods {
    * @see {WithTimingConfig}
    */
   forceClose: (animationConfigs?: WithSpringConfig | WithTimingConfig) => void;
+  /**
+   * Instantly set the sheet to a snap point index without animation.
+   * Cancels any in-flight animation and writes the absolute position immediately.
+   *
+   * Useful when container geometry changes (e.g. screen rotation) and snap points are
+   * stored as absolute positions that must be rewritten without racing animations.
+   * @param index snap point index.
+   * @param absolutePosition optional absolute Y (from top of the container). When
+   * provided, this value is written directly instead of reading `snapPoints[index]`,
+   * which may still reflect pre-geometry-update values for a frame.
+   */
+  setToIndex: (index: number, absolutePosition?: number) => void;
+  /**
+   * Instantly set the sheet to a position without animation.
+   * Cancels any in-flight animation and writes the absolute position immediately.
+   * @param position position in pixel or percentage.
+   */
+  setToPosition: (position: number | string) => void;
 }
 
 // biome-ignore lint/suspicious/noExplicitAny: Using 'any' allows users to define their own strict types for 'data' property.

@@ -156,6 +156,24 @@ function BottomSheetModalComponent<T = any>(
     }
     bottomSheetRef.current?.snapToPosition(...args);
   }, []);
+  const handleSetToIndex = useCallback<BottomSheetMethods['setToIndex']>(
+    (...args) => {
+      if (minimized.current) {
+        return;
+      }
+      bottomSheetRef.current?.setToIndex(...args);
+    },
+    []
+  );
+  const handleSetToPosition = useCallback<BottomSheetMethods['setToPosition']>(
+    (...args) => {
+      if (minimized.current) {
+        return;
+      }
+      bottomSheetRef.current?.setToPosition(...args);
+    },
+    []
+  );
   const handleExpand: BottomSheetMethods['expand'] = useCallback((...args) => {
     if (minimized.current) {
       return;
@@ -426,6 +444,8 @@ function BottomSheetModalComponent<T = any>(
     // sheet
     snapToIndex: handleSnapToIndex,
     snapToPosition: handleSnapToPosition,
+    setToIndex: handleSetToIndex,
+    setToPosition: handleSetToPosition,
     expand: handleExpand,
     collapse: handleCollapse,
     close: handleClose,
