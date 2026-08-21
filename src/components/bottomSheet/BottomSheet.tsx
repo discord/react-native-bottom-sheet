@@ -903,6 +903,19 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
         }
 
         /**
+         * when evaluating the position after the container resize, then we
+         * force the bottom sheet to the proposed position with no animation.
+         *
+         * This must run before the in-flight animation restart branch: otherwise a
+         * resize (e.g. orientation change) can restart an animation toward a stale
+         * absolute Y and skip the instant rewrite below.
+         */
+        if (animatedContainerHeightDidChange.value) {
+          setToPosition(proposedPosition);
+          return;
+        }
+
+        /**
          * when evaluating the position while the bottom sheet is animating.
          */
         if (animatedAnimationState.value === ANIMATION_STATE.RUNNING) {
@@ -953,16 +966,6 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
             return;
           }
           setToPosition(animatedClosedPosition.value);
-          return;
-        }
-
-        /**
-         * when evaluating the position after the container resize, then we
-         * force the bottom sheet to the proposed position with no
-         * animation.
-         */
-        if (animatedContainerHeightDidChange.value) {
-          setToPosition(proposedPosition);
           return;
         }
 
@@ -1097,6 +1100,111 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
         animatedPosition,
       ]
     );
+    /**
+     * Instantly set the sheet to a snap index without animation.
+     * Prefer this over `snapToIndex` when container geometry / snap points change
+     * and absolute positions must be rewritten without racing in-flight animations.
+     *
+     * Pass `absolutePosition` when the caller already knows the post-update Y
+     * (e.g. `containerHeight - snapHeight` from the latest React props). That avoids
+     * reading `animatedSnapPoints`, which can lag one frame behind prop updates.
+     */
+    const handleSetToIndex = useStableCallback(function handleSetToIndex(
+      index: number,
+      absolutePosition?: number
+    ) {
+      const snapPoints = animatedSnapPoints.get();
+      const isLayoutReady = isLayoutCalculated.get();
+
+      if (!isLayoutReady) {
+        return;
+      }
+
+      invariant(
+        index >= -1 && index <= snapPoints.length - 1,
+        `'index' was provided but out of the provided snap points range! expected value to be between -1, ${
+          snapPoints.length - 1
+        }`
+      );
+
+      if (__DEV__) {
+        print({
+          component: BottomSheet.name,
+          method: handleSetToIndex.name,
+          params: {
+            index,
+            absolutePosition,
+          },
+        });
+      }
+
+      if (isForcedClosing.value) {
+        return;
+      }
+
+      const nextPosition =
+        absolutePosition !== undefined && Number.isFinite(absolutePosition)
+          ? Math.max(0, absolutePosition)
+          : snapPoints[index];
+      if (nextPosition === undefined) {
+        return;
+      }
+
+      isInTemporaryPosition.value = false;
+
+      // Write index explicitly instead of relying on indexOf(position): during
+      // geometry updates snap point arrays can briefly disagree with the target Y.
+      runOnUI(() => {
+        'worklet';
+        if (
+          nextPosition === animatedPosition.value &&
+          index === animatedNextPositionIndex.value &&
+          animatedAnimationState.value !== ANIMATION_STATE.RUNNING
+        ) {
+          return;
+        }
+
+        animatedNextPosition.value = nextPosition;
+        animatedNextPositionIndex.value = index;
+        stopAnimation();
+        animatedPosition.value = nextPosition;
+        animatedContainerHeightDidChange.value = false;
+      })();
+    });
+    /**
+     * Instantly set the sheet to a position without animation.
+     */
+    const handleSetToPosition = useStableCallback(function handleSetToPosition(
+      position: number | string
+    ) {
+      const isLayoutReady = isLayoutCalculated.get();
+
+      if (!isLayoutReady) {
+        return;
+      }
+
+      if (__DEV__) {
+        print({
+          component: BottomSheet.name,
+          method: handleSetToPosition.name,
+          params: {
+            position,
+          },
+        });
+      }
+
+      if (isForcedClosing.value) {
+        return;
+      }
+
+      const nextPosition = normalizeSnapPoint(
+        position,
+        animatedContainerHeight.get()
+      );
+
+      isInTemporaryPosition.value = true;
+      runOnUI(setToPosition)(nextPosition);
+    });
     // biome-ignore lint/correctness/useExhaustiveDependencies(BottomSheet.name): used for debug only
     const handleClose = useCallback(
       function handleClose(
@@ -1304,6 +1412,8 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
     useImperativeHandle(ref, () => ({
       snapToIndex: handleSnapToIndex,
       snapToPosition: handleSnapToPosition,
+      setToIndex: handleSetToIndex,
+      setToPosition: handleSetToPosition,
       expand: handleExpand,
       collapse: handleCollapse,
       close: handleClose,
@@ -1406,6 +1516,8 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
         animatedPosition,
         snapToIndex: handleSnapToIndex,
         snapToPosition: handleSnapToPosition,
+        setToIndex: handleSetToIndex,
+        setToPosition: handleSetToPosition,
         expand: handleExpand,
         collapse: handleCollapse,
         close: handleClose,
@@ -1416,6 +1528,8 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
         animatedPosition,
         handleSnapToIndex,
         handleSnapToPosition,
+        handleSetToIndex,
+        handleSetToPosition,
         handleExpand,
         handleCollapse,
         handleClose,
