@@ -115,8 +115,11 @@ const BottomSheetBackdropComponent = ({
   //#endregion
 
   //#region effects
+  // Interpolated index can sit at 0.00001 after a geometry write that isn't
+  // bit-identical to the snap Y. Round to the discrete snap for hit-testing;
+  // opacity still follows the raw interpolated value.
   useAnimatedReaction(
-    () => animatedIndex.value <= disappearsOnIndex,
+    () => Math.round(animatedIndex.value) <= disappearsOnIndex,
     (shouldDisableTouchability, previous) => {
       if (shouldDisableTouchability === previous) {
         return;
