@@ -563,7 +563,7 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
           return;
         }
 
-        if (targetIndex !== animatedCurrentIndex.value 
+        if (targetIndex !== animatedCurrentIndex.value
             // there is a race condition when opening and immedately closing the bottom sheet, where
             // the animatedCurrentIndex is not updated yet. As we don't want to miss close events we always call the callback for -1 changes:
             || targetIndex === -1) {
@@ -1152,8 +1152,6 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
 
       isInTemporaryPosition.value = false;
 
-      // Write index explicitly instead of relying on indexOf(position): during
-      // geometry updates snap point arrays can briefly disagree with the target Y.
       runOnUI(() => {
         'worklet';
         if (
@@ -1161,11 +1159,13 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
           index === animatedNextPositionIndex.value &&
           animatedAnimationState.value !== ANIMATION_STATE.RUNNING
         ) {
+          animatedCurrentIndex.value = index;
           return;
         }
 
         animatedNextPosition.value = nextPosition;
         animatedNextPositionIndex.value = index;
+        animatedCurrentIndex.value = index;
         stopAnimation();
         animatedPosition.value = nextPosition;
         animatedContainerHeightDidChange.value = false;
