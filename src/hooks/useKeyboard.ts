@@ -85,7 +85,7 @@ export const useKeyboard = ({
       keyboardState.value = state;
       temporaryCachedKeyboardEvent.value = [];
     },
-    [includeBottomOffset]
+    []
   );
   //#endregion
 
