@@ -1,5 +1,6 @@
+import { useCallback } from 'react';
 import { State } from 'react-native-gesture-handler';
-import { scrollTo, useWorkletCallback, useSharedValue, useAnimatedReaction } from 'react-native-reanimated';
+import { scrollTo, useSharedValue, useAnimatedReaction } from 'react-native-reanimated';
 import { ANIMATION_STATE, SCROLLABLE_STATE, SHEET_STATE } from '../constants';
 import type {
   ScrollEventHandlerCallbackType,
@@ -47,8 +48,9 @@ export const useScrollEventsHandlersDefault: ScrollEventsHandlersHookType = (
 
   //#region callbacks
   const handleOnScroll: ScrollEventHandlerCallbackType<ScrollEventContextType> =
-    useWorkletCallback(
+    useCallback(
       ({ contentOffset: { y } }, context) => {
+        'worklet';
         /**
          * if sheet position is extended or fill parent, then we reset
          * `shouldLockInitialPosition` value to false.
@@ -96,8 +98,9 @@ export const useScrollEventsHandlersDefault: ScrollEventsHandlersHookType = (
       ]
     );
   const handleOnBeginDrag: ScrollEventHandlerCallbackType<ScrollEventContextType> =
-    useWorkletCallback(
+    useCallback(
       ({ contentOffset: { y } }, context) => {
+        'worklet';
         scrollableContentOffsetY.value = y;
         _lockableScrollableContentOffsetY.value = y;
         rootScrollableContentOffsetY.value = y;
@@ -124,8 +127,9 @@ export const useScrollEventsHandlersDefault: ScrollEventsHandlersHookType = (
       ]
     );
   const handleOnEndDrag: ScrollEventHandlerCallbackType<ScrollEventContextType> =
-    useWorkletCallback(
+    useCallback(
       ({ contentOffset: { y } }, context) => {
+        'worklet';
         if (animatedScrollableState.value === SCROLLABLE_STATE.LOCKED) {
           if (isLockingScroll.value) {
             return;
@@ -159,8 +163,9 @@ export const useScrollEventsHandlersDefault: ScrollEventsHandlersHookType = (
       ]
     );
   const handleOnMomentumEnd: ScrollEventHandlerCallbackType<ScrollEventContextType> =
-    useWorkletCallback(
+    useCallback(
       ({ contentOffset: { y } }, context) => {
+        'worklet';
         if (animatedScrollableState.value === SCROLLABLE_STATE.LOCKED) {
           if (isLockingScroll.value) {
             return;

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import {
   Keyboard,
   type KeyboardEvent,
@@ -10,7 +10,6 @@ import {
   runOnUI,
   useAnimatedReaction,
   useSharedValue,
-  useWorkletCallback,
 } from 'react-native-reanimated';
 import { KEYBOARD_STATE, SCREEN_HEIGHT } from '../constants';
 
@@ -52,7 +51,7 @@ export const useKeyboard = ({
   //#endregion
 
   //#region worklets
-  const handleKeyboardEvent = useWorkletCallback(
+  const handleKeyboardEvent = useCallback(
     (
       state: KEYBOARD_STATE,
       height: number,
@@ -60,6 +59,7 @@ export const useKeyboard = ({
       easing: KeyboardEventEasing,
       bottomOffset?: number
     ) => {
+      'worklet';
       if (state === KEYBOARD_STATE.SHOWN && !shouldHandleKeyboardEvents.value) {
         /**
          * if the keyboard event was fired before the `onFocus` on TextInput,
