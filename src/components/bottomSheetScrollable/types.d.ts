@@ -16,7 +16,7 @@ import type {
   View,
   VirtualizedListProps,
 } from 'react-native';
-import type Animated from 'react-native-reanimated';
+import type { AnimatedProps, SharedValue } from 'react-native-reanimated';
 import type { ScrollEventsHandlersHookType } from '../../types';
 
 export interface BottomSheetScrollableProps {
@@ -56,7 +56,7 @@ export interface BottomSheetScrollableProps {
   /**
    * The optional lockable scrollable content offset ref, which will remain the same value when scrollable is locked.Add commentMore actions
    */
-  lockableScrollableContentOffsetY?: Animated.SharedValue<number>;
+  lockableScrollableContentOffsetY?: SharedValue<number>;
 }
 
 export type ScrollableProps<T> =
@@ -66,7 +66,7 @@ export type ScrollableProps<T> =
 
 //#region FlatList
 export type BottomSheetFlatListProps<T> = Omit<
-  Animated.AnimateProps<FlatListProps<T>>,
+  AnimatedProps<FlatListProps<T>>,
   'decelerationRate' | 'scrollEventThrottle'
 > &
   BottomSheetScrollableProps & {
@@ -146,7 +146,7 @@ export interface BottomSheetFlatListMethods {
 
 //#region ScrollView
 export type BottomSheetScrollViewProps = Omit<
-  Animated.AnimateProps<ScrollViewProps>,
+  AnimatedProps<ScrollViewProps>,
   'decelerationRate' | 'scrollEventThrottle'
 > &
   BottomSheetScrollableProps & {
@@ -212,7 +212,7 @@ export interface BottomSheetScrollViewMethods {
 
 //#region SectionList
 export type BottomSheetSectionListProps<ItemT, SectionT> = Omit<
-  Animated.AnimateProps<SectionListProps<ItemT, SectionT>>,
+  AnimatedProps<SectionListProps<ItemT, SectionT>>,
   'decelerationRate' | 'scrollEventThrottle'
 > &
   BottomSheetScrollableProps & {
@@ -255,7 +255,7 @@ export interface BottomSheetSectionListMethods {
 
 //#region
 export type BottomSheetVirtualizedListProps<T> = Omit<
-  Animated.AnimateProps<VirtualizedListProps<T>>,
+  AnimatedProps<VirtualizedListProps<T>>,
   'decelerationRate' | 'scrollEventThrottle'
 > &
   BottomSheetScrollableProps & {
