@@ -1,4 +1,4 @@
-import { type ComponentProps, memo } from 'react';
+import { memo } from 'react';
 import {
   type DefaultSectionT,
   SectionList as RNSectionList,
@@ -11,10 +11,7 @@ import type {
   BottomSheetSectionListProps,
 } from './types';
 
-const AnimatedSectionList =
-  Animated.createAnimatedComponent<ComponentProps<typeof RNSectionList>>(
-    RNSectionList
-  );
+const AnimatedSectionList = Animated.createAnimatedComponent(RNSectionList);
 
 const BottomSheetSectionListComponent = createBottomSheetScrollableComponent<
   BottomSheetSectionListMethods,
