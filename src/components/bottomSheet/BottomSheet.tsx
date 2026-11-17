@@ -677,9 +677,29 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
           offset = animatedKeyboardHeightInContainer.value;
         }
 
-        animatedNextPositionIndex.value = animatedSnapPoints.value.indexOf(
+        let nextPositionIndex = animatedSnapPoints.value.indexOf(
           position + offset
         );
+
+        /**
+         * a move down with the keyboard shown keeps the keyboard offset,
+         * except a close.
+         */
+        if (
+          nextPositionIndex === -1 &&
+          offset === 0 &&
+          animatedKeyboardState.value === KEYBOARD_STATE.SHOWN &&
+          keyboardBehavior !== KEYBOARD_BEHAVIOR.extend &&
+          position !== animatedClosedPosition.value
+        ) {
+          const keyboardSnapPoint =
+            position + animatedKeyboardHeightInContainer.value;
+          nextPositionIndex = animatedSnapPoints.value.findIndex(
+            snapPoint => Math.abs(snapPoint - keyboardSnapPoint) < 1
+          );
+        }
+
+        animatedNextPositionIndex.value = nextPositionIndex;
 
         /**
          * fire `onAnimate` callback
